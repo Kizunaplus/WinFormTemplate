@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{49F6F4AB-3B0A-4DF6-9B49-4BD9BE5A065A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WindowsFormsApplication</RootNamespace>
+    <AssemblyName>WindowsFormsApplication</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS ENABLE_LOGGER DUPLICATE_EXEC ENABLE_COMMANDLINE ENABLE_CONFIGURATION PERFORMANCE_CHECK ENABLE_SPLASH</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;ENABLE_LOGGER DUPLICATE_EXEC ENABLE_COMMANDLINE ENABLE_CONFIGURATION PERFORMANCE_CHECK ENABLE_SPLASH</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="IronPython">
+      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules">
+      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.SQLite">
+      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\IronPython.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Wpf">
+      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\IronPython.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\packages\MathNet.Numerics.2.6.2\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics.IO">
+      <HintPath>..\packages\MathNet.Numerics.2.6.2\lib\net40\MathNet.Numerics.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic">
+      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.AspNet">
+      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\Microsoft.Scripting.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata">
+      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\Microsoft.Scripting.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\Commands\CommandRegister.cs" />
+    <Compile Include="Controllers\Commands\HelpCommand.cs" />
+    <Compile Include="Controllers\Commands\LogCommand.cs" />
+    <Compile Include="Controllers\Commands\NortifyMessageCommand.cs" />
+    <Compile Include="Controllers\Commands\SearchCommand.cs" />
+    <Compile Include="Controllers\Commands\StatusMessageUpdateCommand.cs" />
+    <Compile Include="Controllers\Commands\FileCommand.cs" />
+    <Compile Include="Controllers\Commands\PrinterCommand.cs" />
+    <Compile Include="Controllers\Commands\WindowCommand.cs" />
+    <Compile Include="Controllers\Commands\EditCommand.cs" />
+    <Compile Include="Controllers\Commands\ToolsCommand.cs" />
+    <Compile Include="Controllers\Controller.cs" />
+    <Compile Include="Controllers\DemoController.cs" />
+    <Compile Include="Controllers\IController.cs" />
+    <Compile Include="Controllers\State\ExceptionState.cs" />
+    <Compile Include="Controllers\State\NonState.cs" />
+    <Compile Include="Controllers\State\DebugState.cs" />
+    <Compile Include="Controllers\State\RunState.cs" />
+    <Compile Include="AppEnviroment.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>AppEnviroment.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\Commands\AbstractCommand.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AbstractModel.cs" />
+    <Compile Include="Models\CommandEventData.cs" />
+    <Compile Include="Models\CommandLineData.cs" />
+    <Compile Include="Models\ConfigurationData.cs" />
+    <Compile Include="Models\Enums\MainFormEnums.cs" />
+    <Compile Include="Models\Enums\ModelEnum.cs" />
+    <Compile Include="Models\EventArg\ExceptionEventArgs.cs" />
+    <Compile Include="Models\EventArg\LogMessageEventArgs.cs" />
+    <Compile Include="Models\EventArg\NortifyMessageEventArgs.cs" />
+    <Compile Include="Models\EventArg\SearchEventArgs.cs" />
+    <Compile Include="Models\EventArg\StatusMessageUpdateEventArgs.cs" />
+    <Compile Include="Models\EventArg\FileEventArgs.cs" />
+    <Compile Include="Models\IModel.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Controllers\Commands\ICommand.cs" />
+    <Compile Include="Controllers\State\IState.cs" />
+    <Compile Include="Services\CommandLine\CommandLineService.cs" />
+    <Compile Include="Services\CommandLine\ICommandLineService.cs" />
+    <Compile Include="Services\Data\IDataService.cs" />
+    <Compile Include="Services\File\BackupFileService.cs" />
+    <Compile Include="Services\File\IFileService.cs" />
+    <Compile Include="Services\IService.cs" />
+    <Compile Include="Services\Log\ILogService.cs" />
+    <Compile Include="Services\Log\Log4NetService.cs" />
+    <Compile Include="Services\Log\LogFactory.cs" />
+    <Compile Include="Services\PerformanceMeasurementService.cs" />
+    <Compile Include="Services\Win32GraphicNativeMethods.cs" />
+    <Compile Include="SprashForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SprashForm.Designer.cs">
+      <DependentUpon>SprashForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CommonControl\HelperControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\CommonControl\HelperControl.Designer.cs">
+      <DependentUpon>HelperControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CommonControl\ImageMenuControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Views\CommonControl\ImageMenuControl.Designer.cs">
+      <DependentUpon>ImageMenuControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CommonControl\ProgressControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Views\CommonControl\ProgressControl.Designer.cs">
+      <DependentUpon>ProgressControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CommonControl\SearchControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\CommonControl\SearchControl.Designer.cs">
+      <DependentUpon>SearchControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CommonDialog\AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CommonDialog\AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CommonDialog\ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CommonDialog\ProgressForm.Designer.cs">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CommonDialog\SettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CommonDialog\SettingForm.Designer.cs">
+      <DependentUpon>SettingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DemoView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\DemoView.Designer.cs">
+      <DependentUpon>DemoView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Form\AbstractForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Form\AbstractForm.Designer.cs">
+      <DependentUpon>AbstractForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IView.cs" />
+    <Compile Include="Views\ViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\WebViewControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="SprashForm.resx">
+      <DependentUpon>SprashForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CommonControl\HelperControl.resx">
+      <DependentUpon>HelperControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CommonControl\ImageMenuControl.resx">
+      <DependentUpon>ImageMenuControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CommonControl\ProgressControl.resx">
+      <DependentUpon>ProgressControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CommonControl\SearchControl.resx">
+      <DependentUpon>SearchControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CommonDialog\AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CommonDialog\ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CommonDialog\SettingForm.resx">
+      <DependentUpon>SettingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\DemoView.resx">
+      <DependentUpon>DemoView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Form\AbstractForm.resx">
+      <DependentUpon>AbstractForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ViewControl.resx">
+      <DependentUpon>ViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AppEnviroment.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>AppEnviroment.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 および x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Clearallrequests_8816.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GotoNextRow_289.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GotoPreviousUncovered_8603.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MovePrevious_7195.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Error_grey_677_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\splash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app.ico" />
+    <Content Include="Log4net.Config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
