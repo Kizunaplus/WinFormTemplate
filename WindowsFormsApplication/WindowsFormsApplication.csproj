@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,10 +34,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS ENABLE_LOGGER DUPLICATE_EXEC ENABLE_COMMANDLINE ENABLE_CONFIGURATION PERFORMANCE_CHECK ENABLE_SPLASH</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS ENABLE_LOGGER DUPLICATE_EXEC ENABLE_COMMANDLINE ENABLE_CONFIGURATION PERFORMANCE_CHECK AENABLE_SPLASH</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -89,6 +89,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -100,131 +101,203 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\Commands\CommandRegister.cs" />
-    <Compile Include="Controllers\Commands\HelpCommand.cs" />
-    <Compile Include="Controllers\Commands\LogCommand.cs" />
-    <Compile Include="Controllers\Commands\NortifyMessageCommand.cs" />
-    <Compile Include="Controllers\Commands\SearchCommand.cs" />
-    <Compile Include="Controllers\Commands\StatusMessageUpdateCommand.cs" />
-    <Compile Include="Controllers\Commands\FileCommand.cs" />
-    <Compile Include="Controllers\Commands\PrinterCommand.cs" />
-    <Compile Include="Controllers\Commands\WindowCommand.cs" />
-    <Compile Include="Controllers\Commands\EditCommand.cs" />
-    <Compile Include="Controllers\Commands\ToolsCommand.cs" />
-    <Compile Include="Controllers\Controller.cs" />
-    <Compile Include="Controllers\DemoController.cs" />
-    <Compile Include="Controllers\IController.cs" />
-    <Compile Include="Controllers\State\ExceptionState.cs" />
-    <Compile Include="Controllers\State\NonState.cs" />
-    <Compile Include="Controllers\State\DebugState.cs" />
-    <Compile Include="Controllers\State\RunState.cs" />
-    <Compile Include="AppEnviroment.Designer.cs">
+    <Compile Include="AppEnviroment1.Designer.cs">
       <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>AppEnviroment.settings</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AppEnviroment.resx</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\Commands\AbstractCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\CommandRegister.cs" />
+    <Compile Include="Framework\Controllers\Commands\HelpCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\LogCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\NortifyMessageCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\SearchCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\StatusMessageUpdateCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\FileCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\PrinterCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\WindowCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\EditCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\ToolsCommand.cs" />
+    <Compile Include="Framework\Controllers\Commands\ActionCommand.cs" />
+    <Compile Include="Framework\Controllers\Controller.cs" />
+    <Compile Include="Controllers\DemoController.cs" />
+    <Compile Include="Framework\Controllers\IController.cs" />
+    <Compile Include="Framework\Controllers\State\ExceptionState.cs" />
+    <Compile Include="Framework\Controllers\State\NonState.cs" />
+    <Compile Include="Framework\Controllers\State\DebugState.cs" />
+    <Compile Include="Framework\Controllers\State\RunState.cs" />
+    <Compile Include="Framework\Controllers\Commands\AbstractCommand.cs" />
+    <Compile Include="Framework\Controllers\State\ErrorState.cs" />
+    <Compile Include="Controllers\WebController.cs" />
+    <Compile Include="Framework\Controllers\State\WarningState.cs" />
+    <Compile Include="Framework\Controllers\State\InformationState.cs" />
+    <Compile Include="Framework\Logger\Log4NetLogger.cs" />
+    <Compile Include="Framework\Logger\LogFactory.cs" />
+    <Compile Include="Framework\Message\FrameworkDebugMessage.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FrameworkDebugMessage.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Framework\Message\FrameworkMessage.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FrameworkMessage.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Framework\Message\FrameworkValidationMessage.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FrameworkValidationMessage.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Framework\Models\Enums\LogTypeEnum.cs" />
+    <Compile Include="Framework\Models\Validation\ModelValidationAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\ValueCheckAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\RequiresInputAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\IntegerValueCheckAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\DecimalValueCheckAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\AlphabetValueCheckAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\AlphanomicsValueCheckAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\StringLengthInputAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\CrossCheckInputAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\HtmlValueCheckAttribute.cs" />
+    <Compile Include="Framework\Services\InjectAttribute.cs" />
+    <Compile Include="Framework\Services\Interceptor\ExceptionInterceptorAttribute.cs" />
+    <Compile Include="Framework\Services\Interceptor\JournalInterceptorAttribute.cs" />
+    <Compile Include="Framework\Services\Interceptor\ServiceInterceptorAttribute.cs" />
+    <Compile Include="Framework\Services\Interceptor\TransactionInterceptorAttribute.cs" />
+    <Compile Include="Framework\Services\IService.cs" />
+    <Compile Include="Framework\Services\ServicePool.cs" />
+    <Compile Include="Framework\Services\ServiceProxy.cs" />
+    <Compile Include="Framework\Utility\BackupFileUtility.cs" />
+    <Compile Include="Framework\Utility\CommandLineUtility.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\AbstractModel.cs" />
-    <Compile Include="Models\CommandEventData.cs" />
-    <Compile Include="Models\CommandLineData.cs" />
+    <Compile Include="Framework\Models\AbstractModel.cs" />
+    <Compile Include="Framework\Models\CommandEventData.cs" />
+    <Compile Include="Framework\Models\CommandLineData.cs" />
     <Compile Include="Models\ConfigurationData.cs" />
-    <Compile Include="Models\Enums\MainFormEnums.cs" />
-    <Compile Include="Models\Enums\ModelEnum.cs" />
-    <Compile Include="Models\EventArg\ExceptionEventArgs.cs" />
-    <Compile Include="Models\EventArg\LogMessageEventArgs.cs" />
-    <Compile Include="Models\EventArg\NortifyMessageEventArgs.cs" />
-    <Compile Include="Models\EventArg\SearchEventArgs.cs" />
-    <Compile Include="Models\EventArg\StatusMessageUpdateEventArgs.cs" />
-    <Compile Include="Models\EventArg\FileEventArgs.cs" />
-    <Compile Include="Models\IModel.cs" />
+    <Compile Include="Framework\Models\Enums\MainFormEnums.cs" />
+    <Compile Include="Framework\Models\Enums\ModelEnum.cs" />
+    <Compile Include="Framework\Models\EventArg\AbstractEventArgs.cs" />
+    <Compile Include="Framework\Models\EventArg\ActionEventArgs.cs" />
+    <Compile Include="Framework\Models\MvcCooperationData.cs" />
+    <Compile Include="Framework\Models\EventArg\ExceptionEventArgs.cs" />
+    <Compile Include="Framework\Models\EventArg\LogMessageEventArgs.cs" />
+    <Compile Include="Framework\Models\EventArg\NortifyMessageEventArgs.cs" />
+    <Compile Include="Framework\Models\EventArg\SearchEventArgs.cs" />
+    <Compile Include="Framework\Models\EventArg\StatusMessageUpdateEventArgs.cs" />
+    <Compile Include="Framework\Models\EventArg\FileEventArgs.cs" />
+    <Compile Include="Framework\Models\IModel.cs" />
+    <Compile Include="Framework\Models\ViewStateData.cs" />
+    <Compile Include="Models\DemoModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controllers\Commands\ICommand.cs" />
-    <Compile Include="Controllers\State\IState.cs" />
-    <Compile Include="Services\CommandLine\CommandLineService.cs" />
-    <Compile Include="Services\CommandLine\ICommandLineService.cs" />
-    <Compile Include="Services\Data\IDataService.cs" />
-    <Compile Include="Services\File\BackupFileService.cs" />
-    <Compile Include="Services\File\IFileService.cs" />
-    <Compile Include="Services\IService.cs" />
-    <Compile Include="Services\Log\ILogService.cs" />
-    <Compile Include="Services\Log\Log4NetService.cs" />
-    <Compile Include="Services\Log\LogFactory.cs" />
-    <Compile Include="Services\PerformanceMeasurementService.cs" />
-    <Compile Include="Services\Win32GraphicNativeMethods.cs" />
-    <Compile Include="SprashForm.cs">
+    <Compile Include="Framework\Controllers\Commands\ICommand.cs" />
+    <Compile Include="Framework\Controllers\State\IState.cs" />
+    <Compile Include="Framework\Utility\CommandExecuteUtility.cs" />
+    <Compile Include="Framework\Services\ServiceAttribute.cs" />
+    <Compile Include="Framework\Native\Win32GraphicNativeMethods.cs" />
+    <Compile Include="Framework\Models\Validation\ModelValidation.cs" />
+    <Compile Include="Framework\Services\Interceptor\ServiceInterceptor.cs" />
+    <Compile Include="Framework\Views\Form\SprashForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SprashForm.Designer.cs">
+    <Compile Include="Framework\Views\Form\SprashForm.Designer.cs">
       <DependentUpon>SprashForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\CommonControl\HelperControl.cs">
+    <Compile Include="Framework\Views\CommonControl\HelperControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\CommonControl\HelperControl.Designer.cs">
+    <Compile Include="Framework\Views\CommonControl\HelperControl.Designer.cs">
       <DependentUpon>HelperControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\CommonControl\ImageMenuControl.cs">
+    <Compile Include="Framework\Views\CommonControl\ImageMenuControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Views\CommonControl\ImageMenuControl.Designer.cs">
+    <Compile Include="Framework\Views\CommonControl\ImageMenuControl.Designer.cs">
       <DependentUpon>ImageMenuControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\CommonControl\ProgressControl.cs">
+    <Compile Include="Framework\Views\CommonControl\ProgressControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Views\CommonControl\ProgressControl.Designer.cs">
+    <Compile Include="Framework\Views\CommonControl\ProgressControl.Designer.cs">
       <DependentUpon>ProgressControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\CommonControl\SearchControl.cs">
+    <Compile Include="Framework\Views\CommonControl\SearchControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\CommonControl\SearchControl.Designer.cs">
+    <Compile Include="Framework\Views\CommonControl\SearchControl.Designer.cs">
       <DependentUpon>SearchControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\CommonDialog\AboutForm.cs">
+    <Compile Include="Framework\Views\CommonDialog\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\CommonDialog\AboutForm.Designer.cs">
+    <Compile Include="Framework\Views\CommonDialog\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\CommonDialog\ProgressForm.cs">
+    <Compile Include="Framework\Views\CommonDialog\ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\CommonDialog\ProgressForm.Designer.cs">
+    <Compile Include="Framework\Views\CommonDialog\ProgressForm.Designer.cs">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\CommonDialog\SettingForm.cs">
+    <Compile Include="Framework\Views\CommonDialog\SettingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\CommonDialog\SettingForm.Designer.cs">
+    <Compile Include="Framework\Views\CommonDialog\SettingForm.Designer.cs">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\DemoService.cs" />
+    <Compile Include="Services\IDemoService.cs" />
     <Compile Include="Views\DemoView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\DemoView.Designer.cs">
       <DependentUpon>DemoView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Form\AbstractForm.cs">
+    <Compile Include="Framework\Views\Form\AbstractForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Form\AbstractForm.Designer.cs">
+    <Compile Include="Framework\Views\Form\AbstractForm.Designer.cs">
       <DependentUpon>AbstractForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\IView.cs" />
-    <Compile Include="Views\ViewControl.cs">
+    <Compile Include="Framework\Views\IView.cs" />
+    <Compile Include="Framework\Views\ViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\WebViewControl.cs">
+    <Compile Include="Views\WebView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\WebView.Designer.cs">
+      <DependentUpon>WebView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Framework\Views\WebViewControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Views\Demo2View.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Demo2View.Designer.cs">
+      <DependentUpon>Demo2View.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AppEnviroment.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppEnviroment1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Framework\Message\FrameworkDebugMessage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FrameworkDebugMessage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Framework\Message\FrameworkMessage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FrameworkMessage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Framework\Message\FrameworkValidationMessage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FrameworkValidationMessage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -238,42 +311,44 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SprashForm.resx">
+    <EmbeddedResource Include="Framework\Views\Form\SprashForm.resx">
       <DependentUpon>SprashForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\CommonControl\HelperControl.resx">
+    <EmbeddedResource Include="Framework\Views\CommonControl\HelperControl.resx">
       <DependentUpon>HelperControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\CommonControl\ImageMenuControl.resx">
+    <EmbeddedResource Include="Framework\Views\CommonControl\ImageMenuControl.resx">
       <DependentUpon>ImageMenuControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\CommonControl\ProgressControl.resx">
+    <EmbeddedResource Include="Framework\Views\CommonControl\ProgressControl.resx">
       <DependentUpon>ProgressControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\CommonControl\SearchControl.resx">
+    <EmbeddedResource Include="Framework\Views\CommonControl\SearchControl.resx">
       <DependentUpon>SearchControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\CommonDialog\AboutForm.resx">
+    <EmbeddedResource Include="Framework\Views\CommonDialog\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\CommonDialog\ProgressForm.resx">
+    <EmbeddedResource Include="Framework\Views\CommonDialog\ProgressForm.resx">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\CommonDialog\SettingForm.resx">
+    <EmbeddedResource Include="Framework\Views\CommonDialog\SettingForm.resx">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\DemoView.resx">
       <DependentUpon>DemoView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Form\AbstractForm.resx">
+    <EmbeddedResource Include="Framework\Views\Form\AbstractForm.resx">
       <DependentUpon>AbstractForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\ViewControl.resx">
+    <EmbeddedResource Include="Framework\Views\ViewControl.resx">
       <DependentUpon>ViewControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AppEnviroment.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>AppEnviroment.Designer.cs</LastGenOutput>
+    <EmbeddedResource Include="Views\Demo2View.resx">
+      <DependentUpon>Demo2View.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\WebView.resx">
+      <DependentUpon>WebView.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -333,6 +408,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

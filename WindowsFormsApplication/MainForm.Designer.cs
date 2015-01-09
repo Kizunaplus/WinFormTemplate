@@ -29,7 +29,16 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.MainContentPanel.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // notifyIcon
+            // 
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            // 
+            // debugMessageArea
+            // 
+            this.debugMessageArea.Location = new System.Drawing.Point(388, 163);
             // 
             // MainForm
             // 
@@ -37,9 +46,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 362);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MenuStyles = WindowsFormsApplication.Models.Enums.MenuStyles.AltKeyDown;
+            this.MenuStyles = Kizuna.Plus.WinMvcForm.Framework.Models.Enums.MenuStyles.AltKeyDown;
             this.Name = "MainForm";
             this.Text = "MainForm";
+            this.Controls.SetChildIndex(this.MainContentPanel, 0);
+            this.MainContentPanel.ResumeLayout(false);
+            this.MainContentPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

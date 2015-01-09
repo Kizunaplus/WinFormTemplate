@@ -8,9 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using Kizuna.Plus.WinMvcForm.Framework.Models;
 
 namespace WindowsFormsApplication.Models
 {
+    /// <summary>
+    /// アプリケーション用の設定ファイルデータクラス
+    /// </summary>
     [Serializable]
     class ConfigurationData : AbstractModel
     {
