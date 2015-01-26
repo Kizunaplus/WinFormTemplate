@@ -36,10 +36,6 @@
             // 
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             // 
-            // debugMessageArea
-            // 
-            this.debugMessageArea.Location = new System.Drawing.Point(388, 163);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);

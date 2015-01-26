@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.State
 {
@@ -25,7 +26,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.State
         /// <param name="source">呼び出し元</param>
         public ErrorState(object source)
         {
-            if (source != null)
+            if (source == null)
+            {
+                this.source = typeof(Application);
+            }
+            else
             {
                 this.source = source;
             }

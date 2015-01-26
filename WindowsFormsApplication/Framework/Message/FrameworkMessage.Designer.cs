@@ -61,6 +61,15 @@ namespace WindowsFormsApplication.Framework.Message {
         }
         
         /// <summary>
+        ///   Exception catch method {1}, args: に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string ExceptionMessage {
+            get {
+                return ResourceManager.GetString("ExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Service End : {0}-{1}, Execute Time - {2}ms に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string JournalMessageServiceEnd {
@@ -75,6 +84,15 @@ namespace WindowsFormsApplication.Framework.Message {
         internal static string JournalMessageServiceStart {
             get {
                 return ResourceManager.GetString("JournalMessageServiceStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Uncatch Exception に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string UncatchExceptionMessage {
+            get {
+                return ResourceManager.GetString("UncatchExceptionMessage", resourceCulture);
             }
         }
     }

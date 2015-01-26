@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BatchBackupFolderList_EmptyFolder" xml:space="preserve">
+    <value>Exist empty file path in Batch Backup Folder List : {0}</value>
+  </data>
   <data name="CacheFoundTargetView" xml:space="preserve">
     <value>View found in cache : {0} Method, viewName {1}</value>
   </data>
@@ -126,14 +129,29 @@
   <data name="CreateInstanceTargetView" xml:space="preserve">
     <value>View instance create : {0} Method, viewName {1}</value>
   </data>
+  <data name="ExceptionBalloonTitle" xml:space="preserve">
+    <value>Exception</value>
+  </data>
   <data name="ExistSameProcess" xml:space="preserve">
     <value>Exist same process : Process Id = {0}</value>
+  </data>
+  <data name="InjectionServiceIsNullOrNotImplements" xml:space="preserve">
+    <value>Not found or not implements IService : Target type {0}, Service attr type {1}, Service name = {2}</value>
+  </data>
+  <data name="InjectServiceNotFoundServiceMessage" xml:space="preserve">
+    <value>Not Found Service : Target object {0}, Field info {1}</value>
   </data>
   <data name="ModelSerialize_FileNotFound" xml:space="preserve">
     <value>Model file not found : type {0}, method {1}, filepath {2}, serialize type {3}</value>
   </data>
   <data name="ModelSerialize_UnsupportedSerializeType" xml:space="preserve">
     <value>Model serialize type unsupported : type {0}, method {1}, serialize type {2}</value>
+  </data>
+  <data name="NotFoundInjectionService" xml:space="preserve">
+    <value>Not found service : Target type {0}, Service attr type {1}, Service name = {2}</value>
+  </data>
+  <data name="NotFoundMappedType" xml:space="preserve">
+    <value>Not Found Mapped Type : TypeName = {0}, SrcType = {1}, Dest Type = {2}</value>
   </data>
   <data name="NotFoundTargetView" xml:space="preserve">
     <value>View not found : {0} Method, viewName {1}</value>
@@ -143,5 +161,11 @@
   </data>
   <data name="ProessStartMessage" xml:space="preserve">
     <value>Start Process : Process Id = {0}</value>
+  </data>
+  <data name="CommandExecuteUtilityExecuteMessage" xml:space="preserve">
+    <value>Ext Command info: exec file {0}, argument {1}</value>
+  </data>
+  <data name="ProessStartCommandLineMessage" xml:space="preserve">
+    <value>Command line info : Argument = {0}</value>
   </data>
 </root>

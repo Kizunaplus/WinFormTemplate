@@ -8,6 +8,9 @@ using WindowsFormsApplication.Framework.Message;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
 {
+    /// <summary>
+    /// 整数値入力チェッククラス
+    /// </summary>
     class IntegerValueCheckAttribute : ValueCheckAttribute
     {
         /// <summary>

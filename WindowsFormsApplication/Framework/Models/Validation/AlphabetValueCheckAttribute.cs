@@ -8,6 +8,9 @@ using WindowsFormsApplication.Framework.Message;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
 {
+    /// <summary>
+    /// アルファベットのみの入力値チェッククラス
+    /// </summary>
     class AlphabetValueCheckAttribute : ValueCheckAttribute
     {
         /// <summary>

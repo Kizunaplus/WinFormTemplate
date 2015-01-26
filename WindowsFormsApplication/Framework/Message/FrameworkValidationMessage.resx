@@ -123,8 +123,23 @@
   <data name="AlphanomicsValueCheckMessage" xml:space="preserve">
     <value>アルファベットと数字のみ入力が可能です。</value>
   </data>
+  <data name="CommandLineIllegalArg" xml:space="preserve">
+    <value>引数{0}は、指定可能な引数ではありません。\r\n</value>
+  </data>
+  <data name="CommandLineIllegalType" xml:space="preserve">
+    <value>引数{0}のデータは、指定可能なデータ型ではありません: {1}\r\n</value>
+  </data>
   <data name="DecimalValueCheckMessage" xml:space="preserve">
     <value>小数値のみ入力が可能です。</value>
+  </data>
+  <data name="FileExistCheckMessageExist" xml:space="preserve">
+    <value>ファイルが存在しています。{0}={1}</value>
+  </data>
+  <data name="FileExistCheckMessageNotExist" xml:space="preserve">
+    <value>ファイルが存在しませんでした。{0}={1}</value>
+  </data>
+  <data name="FilePathCheckAttributeMessageIllegalChar" xml:space="preserve">
+    <value>ファイルパスに使用できない文字が指定されています。{0}={1}, エラー文字:{2}</value>
   </data>
   <data name="HtmlValueCheckMessage" xml:space="preserve">
     <value>Htmlエンコードが必要です。 {0}={1}</value>

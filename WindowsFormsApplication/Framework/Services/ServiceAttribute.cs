@@ -8,10 +8,15 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Services
 {
     /// <summary>
     /// サービス属性
+    /// サービス名称を宣言します。
+    /// インジェクションするメソッド名と一致している場合設定します。
     /// </summary>
     class ServiceAttribute : Attribute
     {
         #region プロパティ
+        /// <summary>
+        /// サービス名称
+        /// </summary>
         public String Name
         {
             get;

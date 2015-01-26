@@ -53,37 +53,34 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="IronPython">
-      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\IronPython.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.5\lib\Net40\IronPython.dll</HintPath>
     </Reference>
     <Reference Include="IronPython.Modules">
-      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\IronPython.Modules.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.5\lib\Net40\IronPython.Modules.dll</HintPath>
     </Reference>
     <Reference Include="IronPython.SQLite">
-      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\IronPython.SQLite.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.5\lib\Net40\IronPython.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="IronPython.Wpf">
-      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\IronPython.Wpf.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.5\lib\Net40\IronPython.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics">
-      <HintPath>..\packages\MathNet.Numerics.2.6.2\lib\net40\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics.IO">
-      <HintPath>..\packages\MathNet.Numerics.2.6.2\lib\net40\MathNet.Numerics.IO.dll</HintPath>
+      <HintPath>..\packages\MathNet.Numerics.3.5.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Dynamic">
-      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\Microsoft.Dynamic.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.5\lib\Net40\Microsoft.Dynamic.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Scripting">
-      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\Microsoft.Scripting.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.5\lib\Net40\Microsoft.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Scripting.AspNet">
-      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\Microsoft.Scripting.AspNet.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.5\lib\Net40\Microsoft.Scripting.AspNet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Scripting.Metadata">
-      <HintPath>..\packages\IronPython.2.7.4\lib\Net45\Microsoft.Scripting.Metadata.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.5\lib\Net40\Microsoft.Scripting.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -127,9 +124,10 @@
     <Compile Include="Framework\Controllers\State\RunState.cs" />
     <Compile Include="Framework\Controllers\Commands\AbstractCommand.cs" />
     <Compile Include="Framework\Controllers\State\ErrorState.cs" />
-    <Compile Include="Controllers\WebController.cs" />
+    <Compile Include="Controllers\DemoWebController.cs" />
     <Compile Include="Framework\Controllers\State\WarningState.cs" />
     <Compile Include="Framework\Controllers\State\InformationState.cs" />
+    <Compile Include="Framework\Controllers\State\AbstractState.cs" />
     <Compile Include="Framework\Logger\Log4NetLogger.cs" />
     <Compile Include="Framework\Logger\LogFactory.cs" />
     <Compile Include="Framework\Message\FrameworkDebugMessage.Designer.cs">
@@ -148,6 +146,9 @@
       <DependentUpon>FrameworkValidationMessage.resx</DependentUpon>
     </Compile>
     <Compile Include="Framework\Models\Enums\LogTypeEnum.cs" />
+    <Compile Include="Framework\Models\Validation\DirectoryExistCheckAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\FileExistCheckAttribute.cs" />
+    <Compile Include="Framework\Models\Validation\FilePathCheckAttribute.cs" />
     <Compile Include="Framework\Models\Validation\ModelValidationAttribute.cs" />
     <Compile Include="Framework\Models\Validation\ValueCheckAttribute.cs" />
     <Compile Include="Framework\Models\Validation\RequiresInputAttribute.cs" />
@@ -160,14 +161,19 @@
     <Compile Include="Framework\Models\Validation\HtmlValueCheckAttribute.cs" />
     <Compile Include="Framework\Services\InjectAttribute.cs" />
     <Compile Include="Framework\Services\Interceptor\ExceptionInterceptorAttribute.cs" />
+    <Compile Include="Framework\Services\Interceptor\InjectionInterceptor.cs" />
     <Compile Include="Framework\Services\Interceptor\JournalInterceptorAttribute.cs" />
     <Compile Include="Framework\Services\Interceptor\ServiceInterceptorAttribute.cs" />
     <Compile Include="Framework\Services\Interceptor\TransactionInterceptorAttribute.cs" />
     <Compile Include="Framework\Services\IService.cs" />
+    <Compile Include="Framework\Services\ITransactionDataService.cs" />
     <Compile Include="Framework\Services\ServicePool.cs" />
     <Compile Include="Framework\Services\ServiceProxy.cs" />
+    <Compile Include="Framework\Services\TransactionDataService.cs" />
     <Compile Include="Framework\Utility\BackupFileUtility.cs" />
     <Compile Include="Framework\Utility\CommandLineUtility.cs" />
+    <Compile Include="Framework\Utility\CryptUtility.cs" />
+    <Compile Include="Framework\Views\WebJs\WebViewJsAccess.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -267,12 +273,6 @@
     <Compile Include="Framework\Views\ViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\WebView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\WebView.Designer.cs">
-      <DependentUpon>WebView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Framework\Views\WebViewControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -281,6 +281,15 @@
     </Compile>
     <Compile Include="Views\Demo2View.Designer.cs">
       <DependentUpon>Demo2View.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DemoWebView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Views\Demo3View.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Demo3View.Designer.cs">
+      <DependentUpon>Demo3View.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="AppEnviroment.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -347,8 +356,8 @@
     <EmbeddedResource Include="Views\Demo2View.resx">
       <DependentUpon>Demo2View.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\WebView.resx">
-      <DependentUpon>WebView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Demo3View.resx">
+      <DependentUpon>Demo3View.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -407,8 +416,22 @@
     <Content Include="Log4net.Config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Views\Web\css\style.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Web\DemoWeb\Index.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Web\js\core.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Views\Web\DemoWeb\Index2.py">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Web\img\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

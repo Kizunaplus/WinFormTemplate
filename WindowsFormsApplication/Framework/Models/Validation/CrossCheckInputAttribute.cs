@@ -6,6 +6,9 @@ using System.Windows.Forms;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
 {
+    /// <summary>
+    /// 複数項目チェッククラス
+    /// </summary>
     class CrossChecksInputAttribute : ModelValidationAttribute
     {
         #region Delegate
@@ -65,5 +68,6 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
 
             return valid;
         }
+
     }
 }

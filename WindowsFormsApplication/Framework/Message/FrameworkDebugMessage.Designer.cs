@@ -61,11 +61,29 @@ namespace WindowsFormsApplication.Framework.Message {
         }
         
         /// <summary>
+        ///   Exist empty file path in Batch Backup Folder List : {0} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string BatchBackupFolderList_EmptyFolder {
+            get {
+                return ResourceManager.GetString("BatchBackupFolderList_EmptyFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   View found in cache : {0} Method, viewName {1} に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string CacheFoundTargetView {
             get {
                 return ResourceManager.GetString("CacheFoundTargetView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ext Command info: exec file {0}, argument {1} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string CommandExecuteUtilityExecuteMessage {
+            get {
+                return ResourceManager.GetString("CommandExecuteUtilityExecuteMessage", resourceCulture);
             }
         }
         
@@ -88,11 +106,38 @@ namespace WindowsFormsApplication.Framework.Message {
         }
         
         /// <summary>
+        ///   Exception に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string ExceptionBalloonTitle {
+            get {
+                return ResourceManager.GetString("ExceptionBalloonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Exist same process : Process Id = {0} に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string ExistSameProcess {
             get {
                 return ResourceManager.GetString("ExistSameProcess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Not found or not implements IService : Target type {0}, Service attr type {1}, Service name = {2} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string InjectionServiceIsNullOrNotImplements {
+            get {
+                return ResourceManager.GetString("InjectionServiceIsNullOrNotImplements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Not Found Service : Target object {0}, Field info {1} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string InjectServiceNotFoundServiceMessage {
+            get {
+                return ResourceManager.GetString("InjectServiceNotFoundServiceMessage", resourceCulture);
             }
         }
         
@@ -115,6 +160,24 @@ namespace WindowsFormsApplication.Framework.Message {
         }
         
         /// <summary>
+        ///   Not found service : Target type {0}, Service attr type {1}, Service name = {2} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string NotFoundInjectionService {
+            get {
+                return ResourceManager.GetString("NotFoundInjectionService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Not Found Mapped Type : TypeName = {0}, SrcType = {1}, Dest Type = {2} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string NotFoundMappedType {
+            get {
+                return ResourceManager.GetString("NotFoundMappedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   View not found : {0} Method, viewName {1} に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string NotFoundTargetView {
@@ -129,6 +192,15 @@ namespace WindowsFormsApplication.Framework.Message {
         internal static string ProessEndMessage {
             get {
                 return ResourceManager.GetString("ProessEndMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Command line info : Argument = {0} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string ProessStartCommandLineMessage {
+            get {
+                return ResourceManager.GetString("ProessStartCommandLineMessage", resourceCulture);
             }
         }
         

@@ -79,11 +79,56 @@ namespace WindowsFormsApplication.Framework.Message {
         }
         
         /// <summary>
+        ///   引数{0}は、指定可能な引数ではありません。\r\n に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string CommandLineIllegalArg {
+            get {
+                return ResourceManager.GetString("CommandLineIllegalArg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   引数{0}のデータは、指定可能なデータ型ではありません: {1}\r\n に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string CommandLineIllegalType {
+            get {
+                return ResourceManager.GetString("CommandLineIllegalType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   小数値のみ入力が可能です。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string DecimalValueCheckMessage {
             get {
                 return ResourceManager.GetString("DecimalValueCheckMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   ファイルが存在しています。{0}={1} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string FileExistCheckMessageExist {
+            get {
+                return ResourceManager.GetString("FileExistCheckMessageExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   ファイルが存在しませんでした。{0}={1} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string FileExistCheckMessageNotExist {
+            get {
+                return ResourceManager.GetString("FileExistCheckMessageNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   ファイルパスに使用できない文字が指定されています。{0}={1}, エラー文字:{2} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string FilePathCheckAttributeMessageIllegalChar {
+            get {
+                return ResourceManager.GetString("FilePathCheckAttributeMessageIllegalChar", resourceCulture);
             }
         }
         

@@ -14,6 +14,9 @@ using System.Threading;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Views
 {
+    /// <summary>
+    /// 表示クラス　WinFromのコントロールクラス
+    /// </summary>
     public class ViewControl : UserControl, IView
     {
         #region メンバー変数
@@ -31,6 +34,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
         /// 入力チェック処理情報
         /// </summary>
         private IDictionary<Control, IList<ModelValidationAttribute>> validationControlDict;
+
+        /// <summary>
+        /// バインドモデル
+        /// </summary>
+        private AbstractModel bindModel;
         #endregion
 
         #region プロパティ
@@ -43,6 +51,16 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
             {
                 return this.helperControl.HelpGuide;
             }
+        }
+
+        /// <summary>
+        /// バインドするモデルのタイプ
+        /// 未指定の場合は、ビュー名に対応するモデルタイプを使用する。
+        /// </summary>
+        public Type ModelType
+        {
+            get;
+            protected set;
         }
         #endregion
 
@@ -70,11 +88,6 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
             this.SetStyle(ControlStyles.ContainerControl, true);
             this.SetStyle(ControlStyles.Selectable, false);
             this.SetStyle(ControlStyles.EnableNotifyMessage, true);
-
-            
-            this.SuspendLayout();
-            this.Load += new System.EventHandler(this.ViewControl_Load);
-            this.ResumeLayout(false);
         }
 
         /// 初期化処理
@@ -89,7 +102,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
         /// </summary>
         public virtual void InitBindData()
         {
-            Type modelType = MvcCooperationData.View2Model(this.GetType());
+            Type modelType = ModelType;
+            if (modelType == null)
+            {
+                modelType = MvcCooperationData.View2Model(this.GetType());
+            }
             validationControlDict.Clear();
 
             if (ViewStateData.CurrentThread != null)
@@ -98,12 +115,19 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
                 {
                     if (obj.GetType() == modelType)
                     {
+                        bindModel = obj as AbstractModel;
                         foreach (Control control in this.Controls)
                         {
                             var dataGridView = control as DataGridView;
                             if (dataGridView != null)
                             {
-                                dataGridView.DataSource = obj;
+                                var bs = new BindingSource();
+                                dataGridView.DataSource = bs;
+                                bs.DataSource = obj;
+                                bs.DataMember = dataGridView.Name;
+
+                                dataGridView.CellValidating += new DataGridViewCellValidatingEventHandler(dataGridView_CellValidating);
+                                dataGridView.RowValidating += new DataGridViewCellCancelEventHandler(dataGridView_RowValidating);
                             }
                             else
                             {
@@ -149,7 +173,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
         /// </summary>
         public override void Refresh()
         {
-            InitBindData();
+            this.Update();
         }
         #endregion
 
@@ -170,6 +194,16 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
                 this.helperControl.AssignControl = this;
                 this.Controls.Add(this.helperControl);
                 this.helperControl.BringToFront();
+            }
+
+            foreach (Control control in this.Controls)
+            {
+                Button button = control as Button;
+                if (button == null)
+                {
+                    continue;
+                }
+                button.Click += button_DefaultClick;
             }
         }
         #endregion
@@ -222,26 +256,6 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
         }
         #endregion
 
-        #region ロードイベント
-        /// <summary>
-        /// ロードイベント
-        /// </summary>
-        /// <param name="sendar"></param>
-        /// <param name="args"></param>
-        private void ViewControl_Load(object sendar, EventArgs args)
-        {
-            foreach (Control control in this.Controls)
-            {
-                Button button = control as Button;
-                if (button == null)
-                {
-                    continue;
-                }
-                button.Click += button_DefaultClick;
-            }
-        }
-        #endregion
-
         #region 入力チェックイベント
         /// <summary>
         /// 入力チェック処理
@@ -260,6 +274,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
                 String message;
                 if (ModelValidation.Valid(control, validationControlDict[control], out message) == false)
                 {
+                    // 入力エラー
                     e.Cancel = true;
 
                     NortifyMessageEventArgs eventArgs = new NortifyMessageEventArgs();
@@ -273,9 +288,125 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
                 }
                 else
                 {
-                    control.BackColor = TextBox.DefaultBackColor;
+                    // 入力正常
+                    control.BackColor = SystemColors.Window;
                 }
             }
+        }
+
+        /// <summary>
+        /// 入力チェック処理（DataGridView）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void dataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            DataGridView dataGridView = sender as DataGridView;
+            if (dataGridView == null)
+            {
+                return;
+            }
+
+            if (dataGridView.IsCurrentCellDirty == false)
+            {
+                // 変更していない場合は、何もしない
+                return;
+            }
+
+            PropertyInfo viewBindProperty = bindModel.GetType().GetProperty(dataGridView.Name, BindingFlags.Instance | BindingFlags.Public);
+            Type viewBindPropertyType = viewBindProperty.PropertyType;
+            if (viewBindPropertyType.IsGenericType == true 
+                && 0 < viewBindPropertyType.GetGenericArguments().Length)
+            {
+                viewBindPropertyType = viewBindPropertyType.GetGenericArguments()[0];
+            }
+
+            String propertyName = dataGridView.Columns[e.ColumnIndex].DataPropertyName;
+            PropertyInfo property = viewBindPropertyType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public);
+            List<ModelValidationAttribute> validAttrList = new List<ModelValidationAttribute>();
+
+            foreach (Attribute attr in property.GetCustomAttributes(typeof(ModelValidationAttribute), true))
+            {
+                ModelValidationAttribute ivAttr = attr as ModelValidationAttribute;
+                if (ivAttr == null)
+                {
+                    continue;
+                }
+                validAttrList.Add(ivAttr);
+            }
+
+            String message;
+            if (ModelValidation.Valid(e.FormattedValue, dataGridView.Columns[e.ColumnIndex].HeaderText, validAttrList, out message) == false)
+            {
+                // 入力エラー
+                e.Cancel = true;
+                dataGridView.Rows[e.RowIndex].ErrorText = message;
+            } else {
+                dataGridView.Rows[e.RowIndex].ErrorText = null;
+            }
+
+        }
+
+        void dataGridView_RowValidating(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            DataGridView dataGridView = sender as DataGridView;
+            if (dataGridView == null)
+            {
+                return;
+            }
+
+            if (dataGridView.IsCurrentRowDirty == false)
+            {
+                // 変更していない場合は、何もしない
+                return;
+            }
+
+
+            PropertyInfo viewBindProperty = bindModel.GetType().GetProperty(dataGridView.Name, BindingFlags.Instance | BindingFlags.Public);
+            Type viewBindPropertyType = viewBindProperty.PropertyType;
+            if (viewBindPropertyType.IsGenericType == true
+                && 0 < viewBindPropertyType.GetGenericArguments().Length)
+            {
+                viewBindPropertyType = viewBindPropertyType.GetGenericArguments()[0];
+            }
+            foreach (DataGridViewColumn column in dataGridView.Columns)
+            {
+                String propertyName = column.DataPropertyName;
+                if (string.IsNullOrEmpty(propertyName) == true)
+                {
+                    continue;
+                }
+                PropertyInfo property = viewBindPropertyType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public);
+                if (property == null)
+                {
+                    continue;
+                }
+                List<ModelValidationAttribute> validAttrList = new List<ModelValidationAttribute>();
+
+                foreach (Attribute attr in property.GetCustomAttributes(typeof(ModelValidationAttribute), true))
+                {
+                    ModelValidationAttribute ivAttr = attr as ModelValidationAttribute;
+                    if (ivAttr == null)
+                    {
+                        continue;
+                    }
+                    validAttrList.Add(ivAttr);
+                }
+
+                String message;
+                if (ModelValidation.Valid(dataGridView[column.Index, e.RowIndex].Value, column.HeaderText, validAttrList, out message) == false)
+                {
+                    // 入力エラー
+                    e.Cancel = true;
+                    dataGridView.Rows[e.RowIndex].ErrorText = message;
+                    break;
+                }
+                else
+                {
+                    dataGridView.Rows[e.RowIndex].ErrorText = null;
+                }
+            }
+            
         }
         #endregion
 

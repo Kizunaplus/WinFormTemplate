@@ -13,6 +13,15 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.EventArg
     {
         #region プロパティ
         /// <summary>
+        /// 例外メッセージ
+        /// </summary>
+        public String Message
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// 例外
         /// </summary>
         public Exception Exception

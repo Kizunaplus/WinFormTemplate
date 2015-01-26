@@ -65,7 +65,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers
         /// 対応するビューを取得
         /// ***Controller => ***View
         /// </summary>
-        /// <returns></returns>
+        /// <returns>ビュー</returns>
         protected IView GetDefaultView()
         {
             var logCommand = new LogCommand();

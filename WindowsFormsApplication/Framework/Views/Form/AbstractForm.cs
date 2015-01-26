@@ -21,6 +21,9 @@ using Kizuna.Plus.WinMvcForm.Framework.Services.Interceotor;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
 {
+    /// <summary>
+    /// MainForm抽象クラス
+    /// </summary>
     public partial class AbstractForm : Form
     {
         #region メンバー変数
@@ -604,7 +607,12 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
                     {
                         // TextBox
                         int selectionStart = textBox.SelectionStart;
+                        int selectionLength = textBox.SelectionLength;
                         String tmpContents = textBox.Text;
+                        if (1 < selectionLength)
+                        {
+                            tmpContents = tmpContents.Substring(0, selectionStart) + tmpContents.Substring(selectionStart + selectionLength);
+                        }
                         textBox.Text = tmpContents.Insert(selectionStart, contents);
                         textBox.SelectionStart = selectionStart + contents.Length;
                     }
@@ -705,37 +713,36 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
                         // Action
                         actionName = "Index";
                     }
+
+                    var newController = ChangeController(controller);
+                    FieldInfo[] fields = newController.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+                    foreach (FieldInfo field in fields)
+                    {
+                        // Intect属性がついているフィールドに値を設定
+                        InjectAttribute.InjectService<IService>(newController, field);
+                    }
+
+                    // Controllerのメソッドを実行
+
+                    var invokerMethod = newController.GetType().GetMethod(actionName);
+                    if (invokerMethod == null)
+                    {
+                        // メソッドを取得失敗
+                        return;
+                    }
+                    ViewStateData.CurrentThread.Items["Controller"] = controller;
+                    ViewStateData.CurrentThread.Items["Action"] = actionName;
+                    object result = invokerMethod.Invoke(newController, parameters);
+
                     new Thread(delegate()
                     {
                         UpdateControlChange((MethodInvoker)delegate()
                         {
-                            var newController = ChangeController(controller);
-                            if (newController == null)
-                            {
-                                return;
-                            }
-
-                            FieldInfo[] fields = newController.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-                            foreach (FieldInfo field in fields)
-                            {
-                                Attribute[] attr = field.GetCustomAttributes(typeof(InjectAttribute), true) as Attribute[];
-                                if (attr != null && 0 < attr.Length)
-                                {
-                                    // Intect属性がついているフィールドに値を設定
-                                    InjectAttribute.InjectService<IService>(newController, field);
-                                }
-                            }
-
-                            // Controllerのメソッドを実行
-
-                            var invokerMethod = newController.GetType().GetMethod(actionName);
-                            if (invokerMethod == null)
-                            {
-                                // メソッドを取得失敗
-                                return;
-                            }
-                            object result = invokerMethod.Invoke(newController, parameters);
                             this.View = result as IView;
+                            if (this.View != null)
+                            {
+                                this.View.InitBindData();
+                            }
                             if (this.IsMdiContainer == true)
                             {
                                 Control control = this.View as Control;
@@ -982,11 +989,22 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
         }
 
         /// <summary>
-        /// フォームクローズイベント
+        /// フォームクローズ前イベント
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // エラーがあっても終了
+            e.Cancel = false;
+        }
+
+        /// <summary>
+        /// フォームクローズ後イベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AbstractForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.notifyIcon.Visible = false;
 
@@ -1138,6 +1156,37 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
             Rectangle imageRect = new Rectangle(new Point(), image.Size);
 
             e.Graphics.DrawImage(image, e.PageSettings.PrintableArea, imageRect, GraphicsUnit.Pixel);
+        }
+        #endregion
+
+        #region コントロール無効化
+        /// <summary>
+        /// コントロールの有効/無効　非表示/表示設定を行います。
+        /// </summary>
+        /// <param name="visible">表示する場合はtrue, それ以外はfalse</param>
+        /// <param name="enabled">有効化する場合はtrue, それ以外はfalse</param>
+        /// <param name="controls">対象のコントロール配列</param>
+        protected void SetVisibleEnableControl(bool visible, bool enabled, Component[] controls)
+        {
+            foreach (Component component in controls)
+            {
+                var control = component as Control;
+                if (control != null)
+                {
+                    control.Visible = visible;
+                    control.Enabled = enabled;
+                    continue;
+                }
+
+                var toolStripMenuItem = component as ToolStripItem;
+                if (toolStripMenuItem != null)
+                {
+                    toolStripMenuItem.Visible = visible;
+                    toolStripMenuItem.Enabled = enabled;
+                    continue;
+                }
+
+            }
         }
         #endregion
 

@@ -16,16 +16,20 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// </summary>
         void Initialize();
 
+        #region 読み込み
         /// <summary>
         /// ファイルから読み込み
         /// </summary>
         /// <param name="filePath">読み込むファイルパス</param>
         IModel Load(string filePath);
+        #endregion
 
+        #region 保存
         /// <summary>
         /// ファイルへ保存
         /// </summary>
         /// <param name="filePath">保存するファイルパス</param>
         bool Save(string filePath);
+        #endregion
     }
 }

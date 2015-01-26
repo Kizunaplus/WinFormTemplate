@@ -8,6 +8,9 @@ using WindowsFormsApplication.Framework.Message;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
 {
+    /// <summary>
+    /// 少数値の入力値チェッククラス
+    /// </summary>
     class DecimalValueCheckAttribute : ValueCheckAttribute
     {
         /// <summary>

@@ -8,13 +8,16 @@ using WindowsFormsApplication.Framework.Message;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
 {
+    /// <summary>
+    /// Htmlタグ存在チェッククラス
+    /// </summary>
     class HtmlValueCheckAttribute : ValueCheckAttribute
     {
         /// <summary>
         /// コンストラクタ
         /// </summary>
         public HtmlValueCheckAttribute()
-            : base("^(<|>|.)+$", FrameworkValidationMessage.HtmlValueCheckMessage, true)
+            : base("<[\\/a-zA-Z]+>$", FrameworkValidationMessage.HtmlValueCheckMessage, true)
         {
 
         }

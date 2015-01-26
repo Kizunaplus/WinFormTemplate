@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands;
+using Kizuna.Plus.WinMvcForm.Framework.Models.Enums;
+using WindowsFormsApplication.Framework.Message;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Utility
 {
+    /// <summary>
+    /// 外部実行ファイルの実行をサポートします。
+    /// </summary>
     class CommandExecuteUtility
     {
         /// <summary>
@@ -34,6 +40,10 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
 
                 // 引数設定
                 process.StartInfo.Arguments = argument.ToString();
+
+                // ログに出力
+                var logCommand = new LogCommand();
+                logCommand.Execute(LogType.Debug, FrameworkDebugMessage.CommandExecuteUtilityExecuteMessage, execName, argument.ToString());
 
                 // コマンド実行
                 process.Start();

@@ -4,11 +4,18 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using Kizuna.Plus.WinMvcForm.Framework.Models;
+using Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands;
+using Kizuna.Plus.WinMvcForm.Framework.Models.Enums;
+using WindowsFormsApplication.Framework.Message;
+using System.Reflection;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Utility
 {
     /// <summary>
     /// ファイルバックアップ処理
+    /// 
+    /// ファイルの書き込みに失敗した場合も
+    /// 以前の状態へファイルを戻すことをサポートします。
     /// </summary>
     class BackupFileUtility
     {
@@ -69,6 +76,8 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
             {
                 lock (BatchBackupFolderList)
                 {
+                    var logCommand = new LogCommand();
+
                     // 対象フォルダに対してすべて保存処理を行う
                     foreach (var backupFileData in BatchBackupTargetFileList)
                     {
@@ -77,6 +86,8 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                             if (string.IsNullOrEmpty(folderPath) == true)
                             {
                                 // パスが不正
+                                logCommand.Execute(LogType.Debug, FrameworkDebugMessage.BatchBackupFolderList_EmptyFolder, BatchBackupFolderList);
+
                                 continue;
                             }
                             if (Directory.Exists(folderPath) == false)
@@ -86,8 +97,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                                 {
                                     Directory.CreateDirectory(folderPath);
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
+                                    // 例外処理
+                                    logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name);
+
                                     continue;
                                 }
                             }
@@ -108,6 +122,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
         /// <param name="retry">リトライ回数</param>
         public bool BackupWriteFile(string filePath, IModel model, int retry = 0)
         {
+            var logCommand = new LogCommand();
             string movedFilePath = Path.GetTempFileName();
             try
             {
@@ -116,8 +131,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                     System.IO.File.Copy(filePath, movedFilePath, true);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                // 例外処理
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, filePath, model, retry);
+
                 return false;
             }
 
@@ -144,8 +162,10 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                 {
                     System.IO.File.Copy(movedFilePath, filePath, true);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    // 例外処理
+                    logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, filePath);
                 }
             }
 
@@ -165,11 +185,14 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
         {
             lock (BatchBackupFolderList)
             {
+                var logCommand = new LogCommand();
+
                 foreach (var folderPath in BatchBackupFolderList)
                 {
                     if (string.IsNullOrEmpty(folderPath) == true)
                     {
                         // パスが不正
+                        logCommand.Execute(LogType.Debug, FrameworkDebugMessage.BatchBackupFolderList_EmptyFolder, BatchBackupFolderList);
                         continue;
                     }
                     if (Directory.Exists(folderPath) == false)
@@ -179,8 +202,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                         {
                             Directory.CreateDirectory(folderPath);
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            // 例外処理
+                            logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, filePath);
+
                             continue;
                         }
                     }
@@ -202,14 +228,16 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
         /// <returns>true:新しい, false:古い</returns>
         public bool IsNewBackupBatchFile(string filePath)
         {
+            var logCommand = new LogCommand();
             DateTime fileDateTime = DateTime.MinValue;
             try
             {
                 fileDateTime = System.IO.File.GetLastWriteTime(filePath);
             }
-            catch
+            catch (Exception ex)
             {
-
+                // 例外処理
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, filePath);
             }
 
             lock (BatchBackupFolderList)
@@ -219,6 +247,8 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                     if (string.IsNullOrEmpty(folderPath) == true)
                     {
                         // パスが不正
+                        logCommand.Execute(LogType.Debug, FrameworkDebugMessage.BatchBackupFolderList_EmptyFolder, BatchBackupFolderList);
+
                         continue;
                     }
                     if (Directory.Exists(folderPath) == false)
@@ -228,8 +258,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                         {
                             Directory.CreateDirectory(folderPath);
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            // 例外処理
+                            logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, filePath);
+
                             continue;
                         }
                     }
@@ -239,10 +272,12 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                     {
                         backupfileDateTime = System.IO.File.GetLastWriteTime(Path.Combine(folderPath, Path.GetFileName(filePath)));
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        // 例外処理
+                        logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, filePath);
                     }
+
                     if (fileDateTime < backupfileDateTime)
                     {
                         return true;
@@ -261,15 +296,17 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
         /// <returns></returns>
         public bool LoadNewBackupBatchFile(string filePath, ref IModel data)
         {
+            var logCommand = new LogCommand();
             string newFilePath = filePath;
             DateTime newFileDateTime = DateTime.MinValue;
             try
             {
                 newFileDateTime = System.IO.File.GetLastWriteTime(newFilePath);
             }
-            catch
+            catch (Exception ex)
             {
-
+                // 例外処理
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, filePath, data);
             }
 
             lock (BatchBackupFolderList)
@@ -288,8 +325,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                         {
                             Directory.CreateDirectory(folderPath);
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            // 例外処理
+                            logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, filePath, data);
+
                             continue;
                         }
                     }
@@ -299,9 +339,10 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                     {
                         backupfileDateTime = System.IO.File.GetLastWriteTime(Path.Combine(folderPath, Path.GetFileName(filePath)));
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        // 例外処理
+                        logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, filePath, data);
                     }
                     if (newFileDateTime < backupfileDateTime)
                     {

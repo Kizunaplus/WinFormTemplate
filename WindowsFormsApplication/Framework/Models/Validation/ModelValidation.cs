@@ -17,11 +17,13 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
     /// </summary>
     class ModelValidation
     {
+        #region 検証
         /// <summary>
         /// 実行
         /// </summary>
-        /// <param name="delegateMethod">計測するメソッド</param>
-        /// <param name="parameters">メソッド引数</param>
+        /// <param name="control">チェック対象コントロール</param>
+        /// <param name="attributes">チェック属性</param>
+        /// <param name="message">エラーメッセージ</param>
         public static bool Valid(Control control, IList<ModelValidationAttribute> attributes, out String message)
         {
             bool valid = true;
@@ -54,5 +56,34 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
 
             return valid;
         }
+
+        /// <summary>
+        /// 実行
+        /// </summary>
+        /// <param name="obj">チェック対象</param>
+        /// <param name="dataName">チェック対象名称</param>
+        /// <param name="attributes">チェック属性</param>
+        /// <param name="message">エラーメッセージ</param>
+        public static bool Valid(Object obj, String dataName, IList<ModelValidationAttribute> attributes, out String message)
+        {
+            bool valid = true;
+            message = "";
+
+            // 入力チェック処理
+            foreach (ModelValidationAttribute attr in attributes)
+            {
+
+                // DataGridView用のチェック
+                if (attr.Valid(obj, ref message, dataName) == false)
+                {
+                    valid = false;
+                    break;
+                }
+            }
+
+            return valid;
+        }
+        #endregion
+
     }
 }

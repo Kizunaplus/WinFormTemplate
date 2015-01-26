@@ -37,7 +37,14 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
                     {
                         return false;
                     }
-                    args = new ExceptionEventArgs() { Exception = param[0] as Exception };
+                    StringBuilder exceptionMessage = new StringBuilder();
+                    exceptionMessage.Append(message);
+                    for (int index = 2; index < param.Length; index++)
+                    {
+                        exceptionMessage.AppendFormat("[{0}], ", param[index]);
+                    }
+
+                    args = new ExceptionEventArgs() { Message = exceptionMessage.ToString(), Exception = param[0] as Exception };
                     break;
                 case LogType.Error:
                     // エラー

@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
 {
+    /// <summary>
+    /// 正規表現にて入力チェッククラス
+    /// </summary>
     class ValueCheckAttribute : ModelValidationAttribute
     {
         #region メンバー変数
@@ -41,24 +45,26 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
         }
         #endregion
 
+        #region 検証
         /// <summary>
-        /// 入力チェック
+        /// プロパティの入力チェック
         /// </summary>
-        /// <param name="control">対象コントロール</param>
-        /// <param name="message">エラー内容メッセージ</param>
+        /// <param name="target">対象</param>
+        /// <param name="message">エラーメッセージ</param>
         /// <returns></returns>
-        public override bool Valid(Control control, ref String message)
+        public override bool Valid(Object target, ref String message, String typeName = "")
         {
             bool valid = true;
 
-            if (Regex.IsMatch(control.Text, regexPattern) == this.isMatch)
+            if (Regex.IsMatch(target.ToString(), regexPattern) == this.isMatch)
             {
                 valid = false;
-                message = String.Format(errorMessage + " {0}={1}", control.Name, control.Text);
+                message = String.Format(errorMessage + " {0}={1}", typeName, target);
             }
 
             return valid;
         }
+        #endregion
 
     }
 }

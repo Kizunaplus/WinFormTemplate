@@ -21,24 +21,27 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Services.Interceotor
             }
 
             // 属性を取得
-            IList<ServiceInterceptorAttribute> attributes = invokerMethod.GetCustomAttributes(typeof(ServiceInterceptorAttribute), true) as IList<ServiceInterceptorAttribute>;
+            IList<ServiceInterceptorAttribute> attributes = new List<ServiceInterceptorAttribute>(invokerMethod.GetCustomAttributes(typeof(ServiceInterceptorAttribute), true) as IList<ServiceInterceptorAttribute>);
 
-            object retValue = null;
-            if (attributes == null || attributes.Count <= 0)
-            {
-                // 属性が指定されていない場合
-                retValue = invokerMethod.Invoke(service, parameters);
-            }
-            else
-            {
-                var attr = attributes[0];
-
-                var newAttributes = new List<ServiceInterceptorAttribute>(attributes);
-                newAttributes.RemoveAt(0);
-                return attr.Invoker(service, invokerMethod, parameters, newAttributes);
+            // InjectionInterceptorが宣言されているかチェック
+            bool isFound = false;
+            foreach (var checkAttr in attributes) {
+                if (checkAttr.GetType() == typeof(InjectionInterceptorAttribute))
+                {
+                    isFound = true;
+                    break;
+                }
             }
 
-            return retValue;
+            if (isFound == false) {
+                // 設定されていない場合は設定
+                attributes.Insert(0, new InjectionInterceptorAttribute());
+            }
+
+            var attr = attributes[0];
+
+            attributes.RemoveAt(0);
+            return attr.Invoker(service, invokerMethod, parameters, attributes);
         }
     }
 }

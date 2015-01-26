@@ -1,26 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
-using Kizuna.Plus.WinMvcForm.Framework.Models;
 using Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands;
-using Microsoft.Win32;
-using System.Diagnostics;
+using Kizuna.Plus.WinMvcForm.Framework.Controllers.State;
+using Kizuna.Plus.WinMvcForm.Framework.Models;
+using Kizuna.Plus.WinMvcForm.Framework.Models.Enums;
+using Kizuna.Plus.WinMvcForm.Framework.Models.EventArg;
+using WindowsFormsApplication.Framework.Message;
+using Kizuna.Plus.WinMvcForm.Framework.Views.WebJs;
+using IronPython.Hosting;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Views
 {
+    /// <summary>
+    /// 表示クラス　WebBrowserクラス
+    /// </summary>
     public class WebViewControl : WebBrowser, IView
     {
         #region メンバー変数
         /// <summary>
         /// イベント割付データ一覧
         /// </summary>
-        List<CommandEventData> commandEventDataList;
+        private List<CommandEventData> commandEventDataList;
+
+        /// <summary>
+        /// 表示するページのパス
+        /// </summary>
+        private string pagePath;
+        #endregion
+
+        #region プロパティ
+        /// <summary>
+        /// 表示するページのパスを取得します。
+        /// </summary>
+        [Browsable(true)]
+        public string PagePath
+        {
+            get
+            {
+                return pagePath;
+            }
+            set
+            {
+                string tmpPagePath = pagePath;
+                pagePath = value;
+                if (tmpPagePath != value 
+                    && string.IsNullOrEmpty(value) == false)
+                {
+                    OnPagePathChanged(EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// バインドするモデルのタイプ
+        /// 未指定の場合は、ビュー名に対応するモデルタイプを使用する。
+        /// </summary>
+        public Type ModelType
+        {
+            get;
+            protected set;
+        }
         #endregion
 
         #region 初期化処理
@@ -31,6 +74,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
         {
             // イベント割付データ一覧の取得
             commandEventDataList = GetCommandEventDataList();
+
+            this.ObjectForScripting = new WebViewJsAccess();
+            this.WebBrowserShortcutsEnabled = false;
+            this.AllowWebBrowserDrop = false;
+            this.IsWebBrowserContextMenuEnabled = false;
         }
 
         /// <summary>
@@ -39,6 +87,48 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
         public void Initialize()
         {
             RegistViewEvent();
+        }
+        
+        /// <summary>
+        /// バインドデータの設定
+        /// </summary>
+        public virtual void InitBindData()
+        {
+            if (ViewStateData.CurrentThread.Items.ContainsKey("Page") == false)
+            {
+                string controll = ViewStateData.CurrentThread.Items["Controller"] as String;
+                string action = ViewStateData.CurrentThread.Items["Action"] as String;
+
+                // 対象のファイルが存在するかチェック
+                string[] exts = new string[] { "html", "htm", "xhtml", "py" };
+                foreach (String ext in exts)
+                {
+                    string path = String.Format("{0}\\Views\\Web\\{1}\\{2}.{3}", Path.GetDirectoryName(Application.ExecutablePath), controll, action, ext);
+                    if (File.Exists(path) == true)
+                    {
+                        this.PagePath = path;
+                        break;
+                    }
+                }
+
+                // 対象のファイルが存在するかチェック
+                if (string.IsNullOrEmpty(this.PagePath) == true)
+                {
+                    foreach (String ext in exts)
+                    {
+                        string path = String.Format("{0}\\Views\\Web\\share\\{2}.{3}", Path.GetDirectoryName(Application.ExecutablePath), controll, action, ext);
+                        if (File.Exists(path) == true)
+                        {
+                            this.PagePath = path;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                this.PagePath = ViewStateData.CurrentThread.Items["Page"] as String;
+            }
         }
         #endregion
 
@@ -86,6 +176,144 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
         public virtual List<CommandEventData> GetCommandEventDataList() { return null; }
         #endregion
 
+        #region イベント処理
+        /// <summary>
+        /// ステータステキストの変更イベント
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnStatusTextChanged(EventArgs e)
+        {
+            StatusMessageUpdateEventArgs eventArgs = new StatusMessageUpdateEventArgs();
+            eventArgs.Message = this.StatusText;
+
+            new StatusMessageUpdateCommand().Execute(new NonState(typeof(Application)), eventArgs);
+
+            base.OnStatusTextChanged(e);
+        }
+
+        /// <summary>
+        /// 表示するページのパスが変更された場合に呼び出されます。
+        /// </summary>
+        /// <param name="e"></param>
+        private void OnPagePathChanged(EventArgs e) {
+            if (String.IsNullOrEmpty(this.PagePath) == true)
+            {
+                return;
+            }
+
+            if (this.PagePath.StartsWith("http://") == true)
+            {
+                // URL
+                Uri uri = null;
+                try
+                {
+                    uri = new Uri(this.PagePath);
+                    this.Url = uri;
+                }
+                catch (Exception ex)
+                {
+                    // ログに出力
+                    var logCommand = new LogCommand();
+                    logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, this.PagePath);
+                }
+            }
+            else if (this.PagePath.EndsWith(".py") == true)
+            {
+                // バインドデータを探す。
+                Type modelType = ModelType;
+                if (modelType == null)
+                {
+                    modelType = MvcCooperationData.View2Model(this.GetType());
+                }
+                IModel model = null;
+                if (ViewStateData.CurrentThread != null)
+                {
+                    foreach (Object obj in ViewStateData.CurrentThread.Items.Values)
+                    {
+                        if (obj.GetType() == modelType)
+                        {
+                            model = obj as IModel;
+                            break;
+                        }
+                    }
+                }
+
+                // python ファイル
+                if (File.Exists(this.PagePath) == true)
+                {
+                    var pythonEngine = Python.CreateEngine();
+                    var scope = pythonEngine.CreateScope();
+                    scope.SetVariable("argument", model);
+
+                    string parentPath = Path.GetDirectoryName(this.PagePath);
+                    scope.SetVariable("ParentPath", parentPath.Replace("\\", "/").Replace(":/", "://"));
+                    string webRootPath = Path.GetDirectoryName(parentPath);
+                    scope.SetVariable("WebRootPath", webRootPath.Replace("\\", "/").Replace(":/", "://"));
+
+                    pythonEngine.ExecuteFile(this.PagePath, scope);
+                    var documentText = scope.GetVariable<string>("result");
+
+                    this.DocumentText = documentText;
+                }
+            }
+            else
+            {
+                // その他のファイル
+                if (File.Exists(this.PagePath) == true)
+                {
+                    try
+                    {
+                        string parentPath = Path.GetDirectoryName(this.PagePath);
+                        string webRootPath = Path.GetDirectoryName(parentPath);
+
+                        string documentText = File.ReadAllText(this.PagePath);
+                        documentText = documentText.Replace("<head>", "<head>" + Environment.NewLine + "<base href=\"file:///" + webRootPath.Replace("\\", "/").Replace(":/", "://") + "/\" />");
+                        this.DocumentText = documentText;
+
+                        //this.Navigate(this.PagePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        // ログに出力
+                        var logCommand = new LogCommand();
+                        logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, this.PagePath);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// コントロールのインスタンスを作成
+        /// </summary>
+        /// <returns>コントロールのインスタンス</returns>
+        protected override Control.ControlCollection CreateControlsInstance()
+        {
+            var newInstance = base.CreateControlsInstance();
+            OnLoad(EventArgs.Empty);
+
+            return newInstance;
+        }
+
+        //
+        // 概要:
+        //     コントロールが初めて表示される前に発生します。
+        public event EventHandler Load;
+
+        /// <summary>
+        /// ロードイベント
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnLoad(EventArgs e)
+        {
+            if (Load != null)
+            {
+                Load(this, e);
+            }
+
+            //InitBindData();
+        }
+        #endregion
+
         #region 検索
         /// <summary>
         /// 検索可能かを取得します。
@@ -117,18 +345,6 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
         #endregion
 
         #region Javascript
-        #region プロパティ
-        /// <summary>
-        /// JavaScript からアクセスできるオブジェクトを設定します。
-        /// object は [System.Runtime.InteropServices.ComVisibleAttribute(true)] が設定されている必要があります。
-        /// </summary>
-        public IModel ObjectForScriptingModel
-        {
-            get { return this.ObjectForScripting as IModel; }
-            set { this.ObjectForScripting = value as IModel; }
-        }
-        #endregion
-
         #region スクリプト
         /// <summary>
         /// 現在読み込んでいる HTML に JavaScript を追加します。

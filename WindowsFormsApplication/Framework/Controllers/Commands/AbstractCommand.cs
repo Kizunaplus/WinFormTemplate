@@ -40,6 +40,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
                 return false;
             }
 
+            // コマンドの実行
             return register.Execute(this, state, args);
         }
     }

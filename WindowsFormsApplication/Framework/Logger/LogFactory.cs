@@ -106,15 +106,16 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Logger
         /// 致命的な障害メッセージの出力
         /// </summary>
         /// <param name="message">メッセージ</param>
-        public static void Fatal(string message)
+        /// <param name="ex">例外</param>
+        public static void Fatal(string message, Exception ex = null)
         {
-            Current.LogService.Fatal(message);
+            Current.LogService.Fatal(message, ex);
         }
 
         /// <summary>
         /// 致命的な障害メッセージの出力
         /// </summary>
-        /// <param name="message">メッセージ</param>
+        /// <param name="ex">例外</param>
         public static void Fatal(Exception ex)
         {
             Current.LogService.Fatal(ex);

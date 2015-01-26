@@ -7,6 +7,7 @@ using Kizuna.Plus.WinMvcForm.Framework.Controllers.State;
 using Kizuna.Plus.WinMvcForm.Framework.Models.EventArg;
 using Kizuna.Plus.WinMvcForm.Framework.Services;
 using Kizuna.Plus.WinMvcForm.Framework.Models.Enums;
+using WindowsFormsApplication.Framework.Message;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
 {
@@ -28,8 +29,9 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
             }
             catch (Exception ex)
             {
+                // 例外処理
                 var logCommand = new LogCommand();
-                logCommand.Execute(LogType.Exception, "", ex);
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, controller, invokerMethod, parameters, attributes);
             }
 
             return retValue;

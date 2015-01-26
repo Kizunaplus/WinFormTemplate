@@ -12,6 +12,9 @@ using System.Windows.Forms;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Views.CommonDialog
 {
+    /// <summary>
+    /// バージョン情報ダイアログ
+    /// </summary>
     public partial class AboutForm : Form
     {
         #region 初期化処理

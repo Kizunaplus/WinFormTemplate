@@ -16,7 +16,7 @@ namespace WindowsFormsApplication.Controllers
         /// デモサービス
         /// </summary>
         [Inject]
-        IDemoService demoService;
+        IDemoService demoService = null;
 
         public override IView Index()
         {
@@ -28,6 +28,11 @@ namespace WindowsFormsApplication.Controllers
         public IView Index2()
         {
             return GetView("Demo2");
+        }
+
+        public IView Index3()
+        {
+            return GetView("Demo3");
         }
     }
 }

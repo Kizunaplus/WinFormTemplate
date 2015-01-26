@@ -4,6 +4,8 @@ using System.Reflection;
 using Kizuna.Plus.WinMvcForm.Framework.Controllers;
 using Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands;
 using Kizuna.Plus.WinMvcForm.Framework.Views;
+using Kizuna.Plus.WinMvcForm.Framework.Models.Enums;
+using WindowsFormsApplication.Framework.Message;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models
 {
@@ -211,6 +213,9 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
             if (newType == null)
             {
                 // 見つからない
+                var logCommand = new LogCommand();
+                logCommand.Execute(LogType.Debug, FrameworkDebugMessage.NotFoundMappedType, typeName, srcType, destType);
+
                 return null;
             }
 

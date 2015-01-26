@@ -13,6 +13,7 @@ using WindowsFormsApplication.Framework.Message;
 using Kizuna.Plus.WinMvcForm.Framework.Models.Enums;
 using Kizuna.Plus.WinMvcForm.Framework;
 using Kizuna.Plus.WinMvcForm.Framework.Logger;
+using System.Reflection;
 
 namespace WindowsFormsApplication
 {
@@ -21,6 +22,18 @@ namespace WindowsFormsApplication
     /// </summary>
     static class Program
     {
+        #region 定数
+        /// <summary>
+        /// 64bit IEバージョン設定
+        /// </summary>
+        private const string IE_VERSION_EMULATION_32BIT = @"SOFTWARE\\Wow6432Node\\Microsoft\\Internet Explorer\\MAIN\\FeatureControl\\FEATURE_BROWSER_EMULATION";
+
+        /// <summary>
+        /// 32bit IEバージョン設定
+        /// </summary>
+        private const string IE_VERSION_EMULATION_64BIT = @"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
+        #endregion
+
         #region メンバー変数
         /// <summary>
         /// 多重起動抑止チェック用Mutex
@@ -66,6 +79,7 @@ namespace WindowsFormsApplication
 #if ENABLE_COMMANDLINE
             // コマンドラインデータの解析
             // 条件付きコンパイルにて指定した場合実行を行います。
+            logCommand.Execute(LogType.Debug, FrameworkDebugMessage.ProessStartCommandLineMessage, Environment.GetCommandLineArgs());
             ParseCommandLine();
 #endif
 
@@ -156,7 +170,7 @@ namespace WindowsFormsApplication
                 {
                     // ログに出力
                     var logCommand = new LogCommand();
-                    logCommand.Execute(LogType.Exception, "", ex);
+                    logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name);
                 }
 #endif
             }
@@ -204,12 +218,11 @@ namespace WindowsFormsApplication
             RegistryKey Regkey = null;
             try
             {
-
                 //For 64 bit Machine 
                 if (Environment.Is64BitOperatingSystem)
-                    Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\\Wow6432Node\\Microsoft\\Internet Explorer\\MAIN\\FeatureControl\\FEATURE_BROWSER_EMULATION", true);
+                    Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(IE_VERSION_EMULATION_64BIT, true);
                 else  //For 32 bit Machine 
-                    Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true);
+                    Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(IE_VERSION_EMULATION_32BIT, true);
 
                 //If the path is not correct or 
                 //If user't have priviledges to access registry 
@@ -256,9 +269,9 @@ namespace WindowsFormsApplication
             {
                 //For 64 bit Machine 
                 if (Environment.Is64BitOperatingSystem)
-                    Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\\Wow6432Node\\Microsoft\\Internet Explorer\\MAIN\\FeatureControl\\FEATURE_BROWSER_EMULATION", true);
+                    Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(IE_VERSION_EMULATION_64BIT, true);
                 else  //For 32 bit Machine 
-                    Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true);
+                    Regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(IE_VERSION_EMULATION_32BIT, true);
 
                 //If the path is not correct or 
                 //If user't have priviledges to access registry 
@@ -317,8 +330,7 @@ namespace WindowsFormsApplication
         static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
             // ログに出力
-            var logCommand = new LogCommand();
-            logCommand.Execute(LogType.Exception, "", e.Exception);
+            LogFactory.Fatal(FrameworkMessage.UncatchExceptionMessage, e.Exception);
 
 #if DEBUG
             // 再Throw

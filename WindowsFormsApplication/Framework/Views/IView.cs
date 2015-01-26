@@ -19,10 +19,9 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views
         void Initialize();
 
         /// <summary>
-        /// 画面の再描画
-        /// 　データの再設定など
+        /// バインドデータの設定
         /// </summary>
-        void Refresh();
+        void InitBindData();
         #endregion
 
         #region イベント操作

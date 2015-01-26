@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Kizuna.Plus.WinMvcForm.Framework.Controllers.State;
+using System.Windows.Forms;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models
 {
@@ -67,7 +68,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
 
             if (this.Source == null)
             {
-                throw new NullReferenceException();
+                this.Source = typeof(Application);
             }
         }
         #endregion

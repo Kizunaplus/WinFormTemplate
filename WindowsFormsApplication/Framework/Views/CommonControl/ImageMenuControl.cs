@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Views.CommonControl
 {
+    /// <summary>
+    /// 画像メニュー表示コントロール
+    /// </summary>
     public partial class ImageMenuControl : FlowLayoutPanel
     {
         #region メンバー変数

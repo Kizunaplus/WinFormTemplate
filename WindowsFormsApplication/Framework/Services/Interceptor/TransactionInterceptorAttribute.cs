@@ -2,11 +2,26 @@
 using System.Reflection;
 using System.Transactions;
 using Kizuna.Plus.WinMvcForm.Framework.Services;
+using WindowsFormsApplication.Framework.Services;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
 {
     class TransactionInterceptorAttribute : ServiceInterceptorAttribute
     {
+        /// <summary>
+        /// トランザクションオプション設定
+        /// </summary>
+        private TransactionScopeOption option;
+
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="option">トランザクションオプション設定</param>
+        public TransactionInterceptorAttribute(TransactionScopeOption option = TransactionScopeOption.Required)
+        {
+            this.option = option;
+        }
+
         /// <summary>
         /// Intercept処理　トランザクション処理を行う
         /// </summary>
@@ -17,13 +32,15 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
         {
             object retValue = null;
 
-            using (TransactionScope scope = new TransactionScope())
+            using (TransactionScope scope = new TransactionScope(option))
             {
-                retValue = base.Invoker(controller, invokerMethod, parameters, attributes);
+                ITransactionDataService service = ServicePool.Current.GetService("transaction") as ITransactionDataService;
+                service.RollbackReserve = false;
 
-                if (retValue != null)
+                retValue = base.Invoker(controller, invokerMethod, parameters, attributes);
+                // null以外の文字場合は、コミットを行う
+                if (service.RollbackReserve == false)
                 {
-                    // null以外の文字場合は、コミットを行う
                     scope.Complete();
                 }
             }

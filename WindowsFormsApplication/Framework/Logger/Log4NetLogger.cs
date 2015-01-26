@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Logger
 {
+    /// <summary>
+    /// Log4Netで出力クラス
+    /// </summary>
     class Log4NetLogger
     {
         #region メンバー変数
@@ -57,15 +60,23 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Logger
         /// 致命的な障害メッセージの出力
         /// </summary>
         /// <param name="message">メッセージ</param>
-        public void Fatal(string message)
+        /// <param name="ex">例外</param>
+        public void Fatal(string message, Exception ex)
         {
-            log.Fatal(message);
+            if (ex == null)
+            {
+                log.Fatal(message);
+            }
+            else
+            {
+                log.Fatal(message, ex);
+            }
         }
 
         /// <summary>
         /// 致命的な障害メッセージの出力
         /// </summary>
-        /// <param name="message">メッセージ</param>
+        /// <param name="ex">例外</param>
         public void Fatal(Exception ex)
         {
             log.Fatal("", ex);

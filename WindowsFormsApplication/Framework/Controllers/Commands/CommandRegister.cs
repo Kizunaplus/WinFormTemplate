@@ -74,17 +74,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
                 // ログ出力処理(エラー)
                 var eventData = new CommandEventData(typeof(Application), typeof(LogCommand), StateMode.Error, delegate(object sender, EventArgs args)
                 {
-                    var threadExceptionArgs = args as System.Threading.ThreadExceptionEventArgs;
-                    if (threadExceptionArgs != null)
-                    {
-                        // 未Catch例外
-                        LogFactory.Fatal(threadExceptionArgs.Exception);
-                    }
                     var exceptionEventArgs = args as ExceptionEventArgs;
                     if (exceptionEventArgs != null)
                     {
                         // 通常例外
-                        LogFactory.Fatal(exceptionEventArgs.Exception);
+                        LogFactory.Fatal(exceptionEventArgs.Message, exceptionEventArgs.Exception);
                     }
 
 #if DEBUG
@@ -93,7 +87,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
                         // デバッグ(通知エリアに例外情報を表示)
                         NortifyMessageEventArgs eventArgs = new NortifyMessageEventArgs();
                         eventArgs.Icon = ToolTipIcon.Error;
-                        eventArgs.Title = "例外";
+                        eventArgs.Title = FrameworkDebugMessage.ExceptionBalloonTitle;
                         eventArgs.Message = exceptionEventArgs.Exception.ToString();
 
                         NortifyMessageCommand command = new NortifyMessageCommand();
@@ -220,7 +214,8 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
             // 対象のすべてのイベントハンドラを実行
             lock (this.evnetRegisterList)
             {
-                foreach (var eventData in this.evnetRegisterList)
+                var eventList = new List<CommandEventData>(this.evnetRegisterList);
+                foreach (var eventData in eventList)
                 {
                     if (eventData.Source != source
                         && (eventData.Source is Type == true && sourceType.IsAssignableFrom((Type)eventData.Source))

@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using WindowsFormsApplication.Framework.Message;
+using System.Reflection;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
 {
+    /// <summary>
+    /// 入力文字数チェッククラス
+    /// </summary>
     class StringLengthInputAttribute : ModelValidationAttribute
     {
         /// <summary>
@@ -43,31 +47,32 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
             this.max_length = max_length;
         }
         #endregion
-
+        
         /// <summary>
-        /// 入力チェック
+        /// プロパティの入力チェック
         /// </summary>
-        /// <param name="control"></param>
-        /// <param name="message"></param>
+        /// <param name="target">対象</param>
+        /// <param name="message">エラーメッセージ</param>
         /// <returns></returns>
-        public override bool Valid(Control control, ref String message)
+        public override bool Valid(Object target, ref String message, String typeName = "")
         {
             bool valid = true;
 
-            String text = control.Text;
+            String text = target.ToString();
             if (text.Length < min_length)
             {
                 valid = false;
-                message = String.Format(FrameworkValidationMessage.StringLengthInput1ArgsMaxMessage, control.Name, control.Text, min_length);
+                message = String.Format(FrameworkValidationMessage.StringLengthInput1ArgsMaxMessage, typeName, text, min_length);
             }
 
             if (0 <= max_length && max_length < text.Length)
             {
                 valid = false;
-                message = String.Format(FrameworkValidationMessage.StringLengthInput1ArgsMinMessage, control.Name, control.Text, min_length, max_length);
+                message = String.Format(FrameworkValidationMessage.StringLengthInput1ArgsMinMessage, typeName, text, min_length, max_length);
             }
 
             return valid;
         }
+
     }
 }

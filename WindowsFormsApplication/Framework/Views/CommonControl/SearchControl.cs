@@ -14,6 +14,9 @@ using Kizuna.Plus.WinMvcForm.Framework.Models.EventArg;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Views.CommonControl
 {
+    /// <summary>
+    /// 検索コントロール
+    /// </summary>
     public partial class SearchControl : UserControl
     {
         #region プロパティ

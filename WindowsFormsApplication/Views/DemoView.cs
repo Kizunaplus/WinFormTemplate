@@ -154,13 +154,22 @@ namespace WindowsFormsApplication.Views
 
             ActionCommand command = new ActionCommand();
             command.Execute(new NonState(typeof(Application)), eventArgs);
+        }
+
+        private void button1_Click_2(object sender, EventArgs e)
+        {
+            ActionEventArgs eventArgs = new ActionEventArgs();
+            eventArgs.ActionName = "Index3";
+
+            ActionCommand command = new ActionCommand();
+            command.Execute(new NonState(typeof(Application)), eventArgs);
 
         }
 
         private void button1_Click_3(object sender, EventArgs e)
         {
             ActionEventArgs eventArgs = new ActionEventArgs();
-            eventArgs.Controller = "Web";
+            eventArgs.Controller = "DemoWeb";
 
             ActionCommand command = new ActionCommand();
             command.Execute(new NonState(typeof(Application)), eventArgs);

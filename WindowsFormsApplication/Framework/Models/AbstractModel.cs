@@ -16,6 +16,7 @@ using Kizuna.Plus.WinMvcForm.Framework.Models.EventArg;
 using System.Reflection;
 using WindowsFormsApplication;
 using WindowsFormsApplication.Framework.Message;
+using Kizuna.Plus.WinMvcForm.Framework.Models.Validation;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models
 {
@@ -43,6 +44,34 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         public virtual object Clone()
         {
             return this.MemberwiseClone();
+        }
+
+        /// <summary>
+        /// 同一のメンバーが存在する場合は、値をコピーします。
+        /// </summary>
+        /// <param name="obj"></param>
+        public void Copy(object obj)
+        {
+            if (obj == null)
+            {
+                return;
+            }
+
+            FieldInfo[] srcFields = obj.GetType().GetFields();
+            FieldInfo[] destFields = this.GetType().GetFields();
+
+            foreach (FieldInfo srcField in srcFields)
+            {
+                foreach (FieldInfo destField in destFields)
+                {
+                    if (srcField.Name.Equals(destField.Name) == true
+                        && srcField.FieldType == destField.FieldType)
+                    {
+                        // 同一名、同一型の値を設定
+                        destField.SetValue(this, srcField.GetValue(obj));
+                    }
+                }
+            }
         }
         #endregion
 
@@ -181,7 +210,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
             catch (Exception ex)
             {
                 var logCommand = new LogCommand();
-                logCommand.Execute(LogType.Exception, "", ex);
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, stream);
             }
 
             return result;
@@ -206,7 +235,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
             catch (Exception ex)
             {
                 var logCommand = new LogCommand();
-                logCommand.Execute(LogType.Exception, "", ex);
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, stream);
             }
 
             return result;
@@ -236,7 +265,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
             catch (Exception ex)
             {
                 var logCommand = new LogCommand();
-                logCommand.Execute(LogType.Exception, "", ex);
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, stream);
             }
 
             return result;
@@ -368,7 +397,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
             catch (Exception ex)
             {
                 var logCommand = new LogCommand();
-                logCommand.Execute(LogType.Exception, "", ex);
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, stream);
 
                 return false;
             }
@@ -394,7 +423,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
             catch (Exception ex)
             {
                 var logCommand = new LogCommand();
-                logCommand.Execute(LogType.Exception, "", ex);
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, stream);
 
                 return false;
             }
@@ -425,12 +454,59 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
             catch (Exception ex)
             {
                 var logCommand = new LogCommand();
-                logCommand.Execute(LogType.Exception, "", ex);
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, stream);
 
                 return false;
             }
 
             return true;
+        }
+        #endregion
+
+        #region 入力値検証
+        /// <summary>
+        /// 入力値検証
+        /// </summary>
+        /// <param name="message">エラーメッセージ</param>
+        /// <returns>true: 入力値に問題がない場合, false : 入力値エラー</returns>
+        public bool Valid(out String message)
+        {
+            bool isValid = true;
+            message = String.Empty;
+
+            PropertyInfo[] properties = this.GetType().GetProperties();
+            foreach (PropertyInfo property in properties)
+            {
+                if (typeof(AbstractModel).IsAssignableFrom(property.PropertyType) == false)
+                {
+                    foreach (Attribute attr in property.GetCustomAttributes(typeof(ModelValidationAttribute), true))
+                    {
+                        ModelValidationAttribute ivAttr = attr as ModelValidationAttribute;
+                        if (ivAttr == null)
+                        {
+                            continue;
+                        }
+
+                        isValid |= ivAttr.Valid(this, property, ref message);
+                        if (isValid == false)
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    // Modelクラスが指定されている場合
+                    isValid = ((AbstractModel)property.GetValue(this, null)).Valid(out message);
+                }
+
+                if (isValid == false)
+                {
+                    break;
+                }
+            }
+
+            return isValid;
         }
         #endregion
 

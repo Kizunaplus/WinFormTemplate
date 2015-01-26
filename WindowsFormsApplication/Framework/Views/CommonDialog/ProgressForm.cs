@@ -11,6 +11,9 @@ using System.Windows.Forms;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Views.CommonDialog
 {
+    /// <summary>
+    /// 進捗表示ダイアログ
+    /// </summary>
     public partial class ProgressForm : Form
     {
         #region イベント定義

@@ -4,9 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using WindowsFormsApplication.Framework.Services;
+using Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands;
+using WindowsFormsApplication.Framework.Message;
+using Kizuna.Plus.WinMvcForm.Framework.Models.Enums;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Services
 {
+    /// <summary>
+    /// サービスインスタンスの管理クラス
+    /// </summary>
     class ServicePool
     {
         #region メンバー変数
@@ -36,6 +42,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Services
             var list = new List<Type>();
             serviceMap = new Dictionary<string, ServiceProxy>();
 
+            var logCommand = new LogCommand();
             var assembly = Assembly.GetExecutingAssembly();
             foreach (Type type in assembly.GetTypes())
             {
@@ -44,6 +51,9 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Services
                 {
                     if (serviceMap.ContainsKey(attr[0].Name) == true)
                     {
+                        // サービス名が設定されているサービスが含まれない
+                        logCommand.Execute(LogType.Debug, FrameworkDebugMessage.NotFoundInjectionService, type.FullName, attr[0].GetType().FullName, attr[0].Name);
+
                         continue;
                     }
 
@@ -64,6 +74,8 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Services
 
                     if (interfaceType == null)
                     {
+                        // Interfaceタイプが見つからないまたは、IServiceを継承していない
+                        logCommand.Execute(LogType.Debug, FrameworkDebugMessage.InjectionServiceIsNullOrNotImplements, type.FullName, attr[0].GetType().FullName, attr[0].Name);
                         return;
                     }
 

@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Views.CommonControl
 {
+    /// <summary>
+    /// ヘルプ情報表示クラス
+    /// </summary>
     public partial class HelperControl : UserControl
     {
         #region イベント定義

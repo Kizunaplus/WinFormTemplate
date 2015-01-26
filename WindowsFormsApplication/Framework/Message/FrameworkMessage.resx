@@ -117,10 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExceptionMessage" xml:space="preserve">
+    <value>Exception catch method {1}, args:</value>
+  </data>
   <data name="JournalMessageServiceEnd" xml:space="preserve">
     <value>Service End : {0}-{1}, Execute Time - {2}ms</value>
   </data>
   <data name="JournalMessageServiceStart" xml:space="preserve">
     <value>Service Start : {0}-{1}, {2}</value>
+  </data>
+  <data name="UncatchExceptionMessage" xml:space="preserve">
+    <value>Uncatch Exception</value>
   </data>
 </root>

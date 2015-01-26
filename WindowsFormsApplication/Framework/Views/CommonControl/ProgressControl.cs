@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Views.CommonControl
 {
+    /// <summary>
+    /// 進捗コントロール
+    /// </summary>
     public partial class ProgressControl : ProgressBar
     {
         #region イベント定義

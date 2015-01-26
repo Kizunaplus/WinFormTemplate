@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace Kizuna.Plus.WinMvcForm.Framework
 {
+    /// <summary>
+    /// 起動時のスプラッシュ画面
+    /// </summary>
     public partial class SprashForm : Form
     {
         #region プロパティ

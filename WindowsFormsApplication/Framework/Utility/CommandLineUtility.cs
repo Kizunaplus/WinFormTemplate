@@ -5,6 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands;
+using Kizuna.Plus.WinMvcForm.Framework.Models.Enums;
+using WindowsFormsApplication.Framework.Message;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Utility
 {
@@ -13,6 +16,13 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
     /// </summary>
     class CommandLineUtility<T> where T : new()
     {
+        #region 定数
+        /// <summary>
+        /// プロパティのみの変数名
+        /// </summary>
+        private const string MODEL_PROPERTY_ONLY_VALUE = "_value";
+        #endregion
+
         #region 変換
         /// <summary>
         /// コマンドラインデータをデータクラスに変換します。
@@ -70,7 +80,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                         // プロパティ[_value]が存在する場合はそのプロパティに設定する
                         foreach (PropertyInfo property in properties)
                         {
-                            if (property.Name.Equals("_value", StringComparison.CurrentCultureIgnoreCase) == true)
+                            if (property.Name.Equals(MODEL_PROPERTY_ONLY_VALUE, StringComparison.CurrentCultureIgnoreCase) == true)
                             {
                                 foundProperty = property;
                                 break;
@@ -80,7 +90,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
 
                     if (foundProperty == null)
                     {
-                        message.AppendFormat("引数{0}は、指定可能な引数ではありません。\r\n", commandLine[argIndex]);
+                        message.AppendFormat(FrameworkValidationMessage.CommandLineIllegalArg, commandLine[argIndex]);
                         continue;
                     }
                 }
@@ -93,7 +103,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                 }
 
                 // その他は、ConvertChangeTypeによって変換する。
-                if (foundProperty.Name.Equals("_value", StringComparison.CurrentCultureIgnoreCase) == false)
+                if (foundProperty.Name.Equals(MODEL_PROPERTY_ONLY_VALUE, StringComparison.CurrentCultureIgnoreCase) == false)
                 {
                     argIndex++;
                 }
@@ -109,7 +119,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
                 }
                 catch
                 {
-                    message.AppendFormat("引数{0}のデータは、指定可能なデータ型ではありません: {1}\r\n", commandLine[argIndex - 1], commandLine[argIndex]);
+                    message.AppendFormat(FrameworkValidationMessage.CommandLineIllegalType, commandLine[argIndex - 1], commandLine[argIndex]);
                     argIndex--;
                 }
             }
@@ -135,6 +145,12 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Utility
             Exception ex;
             // 変換処理
             data = Parse(commandLine, out ex);
+
+            if (ex != null)
+            {
+                var logCommand = new LogCommand();
+                logCommand.Execute(LogType.Exception, FrameworkMessage.ExceptionMessage, ex, MethodBase.GetCurrentMethod().Name, commandLine, data);
+            }
 
             return ex == null;
         }
