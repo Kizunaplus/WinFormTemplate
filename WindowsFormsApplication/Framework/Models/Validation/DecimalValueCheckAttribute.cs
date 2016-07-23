@@ -17,7 +17,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
         /// コンストラクタ
         /// </summary>
         public DecimalValueCheckAttribute()
-            : base("^[0-9]+\\.*[0-9]*$", FrameworkValidationMessage.DecimalValueCheckMessage)
+            : base("^-?[0-9]+\\.?[0-9]*$", FrameworkValidationMessage.DecimalValueCheckMessage)
         {
 
         }

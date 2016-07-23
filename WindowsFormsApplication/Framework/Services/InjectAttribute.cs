@@ -21,9 +21,10 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Services
         /// <typeparam name="T">サービスの型</typeparam>
         /// <param name="target">インジェクション対象のインスタンス</param>
         /// <param name="field">対象のフィールド</param>
-        public static void InjectService<T>(Object target, FieldInfo field) where T : class
+        /// <param name="id">識別するインスタンスID</param>
+        public static void InjectService<T>(Object target, FieldInfo field, Guid id) where T : class
         {
-            T service = (T)ServicePool.Current.GetService(field.Name);
+            T service = (T)ServicePool.Current.GetService(field.Name, id);
             if (service == null)
             {
                 // 存在しないサービス

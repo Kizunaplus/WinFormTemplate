@@ -19,7 +19,15 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
         /// <param name="control">対象コントロール</param>
         /// <param name="message">エラーメッセージ</param>
         /// <returns></returns>
-        public virtual bool Valid(DataGridView control, ref String message) { return true; }
+        public virtual bool Valid(DataGridView control, ref String message) {
+            AbstractModel model = control.DataSource as AbstractModel;
+            if (model == null)
+            {
+                return true;
+            }
+
+            return model.Valid(out message);
+        }
 
         /// <summary>
         /// 標準コントロールの入力チェック

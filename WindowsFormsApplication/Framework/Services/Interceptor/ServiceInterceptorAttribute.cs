@@ -3,7 +3,7 @@ using System.Reflection;
 using Kizuna.Plus.WinMvcForm.Framework.Services;
 using System;
 
-namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
+namespace Kizuna.Plus.WinMvcForm.Framework.Services.Interceptor
 {
     class ServiceInterceptorAttribute : Attribute
     {

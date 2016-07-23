@@ -55,6 +55,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
         public override bool Valid(Object target, ref String message, String typeName = "")
         {
             bool valid = true;
+            if (target == null)
+            {
+                return true;
+            }
+
 
             if (Regex.IsMatch(target.ToString(), regexPattern) == this.isMatch)
             {

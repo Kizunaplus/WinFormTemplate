@@ -49,6 +49,17 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
                 current = value;
             }
         }
+
+        /// <summary>
+        /// 登録済みのイベント
+        /// </summary>
+        public IList<CommandEventData> Events
+        {
+            get
+            {
+                return this.evnetRegisterList.AsReadOnly();
+            }
+        }
         #endregion
 
         #region 初期化処理
@@ -82,7 +93,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
                     }
 
 #if DEBUG
-                    if (exceptionEventArgs != null)
+                    if (exceptionEventArgs != null && exceptionEventArgs.Exception != null)
                     {
                         // デバッグ(通知エリアに例外情報を表示)
                         NortifyMessageEventArgs eventArgs = new NortifyMessageEventArgs();
@@ -92,6 +103,12 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
 
                         NortifyMessageCommand command = new NortifyMessageCommand();
                         command.Execute(new NonState(typeof(Application)), eventArgs);
+                    }
+                    var messageEventArgs = args as LogMessageEventArgs;
+                    if (messageEventArgs != null)
+                    {
+                        // エラーメッセージ
+                        LogFactory.Error(messageEventArgs.Message);
                     }
 #endif
                 });
@@ -109,8 +126,21 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
                     var messageEventArgs = args as LogMessageEventArgs;
                     if (messageEventArgs != null)
                     {
-                        // デバッグメッセージ
-                        LogFactory.Debug(messageEventArgs.Message);
+                        if (messageEventArgs.Type == LogType.Debug)
+                        {
+                            // デバッグメッセージ
+                            LogFactory.Debug(messageEventArgs.Message);
+                        }
+                        else if (messageEventArgs.Type == LogType.Info)
+                        {
+                            // 情報メッセージ
+                            LogFactory.Info(messageEventArgs.Message);
+                        }
+                        else if (messageEventArgs.Type == LogType.Warn)
+                        {
+                            // 警告メッセージ
+                            LogFactory.Warn(messageEventArgs.Message);
+                        }
                     }
                 });
                 this.evnetRegisterList.Add(eventData);
@@ -148,7 +178,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
             lock (this.evnetRegisterList)
             {
                 // イベントリスナーから削除
-                evnetRegisterList.Remove(eventData);
+                while (evnetRegisterList.Remove(eventData) == true) { };
                 eventData.Dispose();
                 eventData = null;
             }
@@ -218,7 +248,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
                 foreach (var eventData in eventList)
                 {
                     if (eventData.Source != source
-                        && (eventData.Source is Type == true && sourceType.IsAssignableFrom((Type)eventData.Source))
+                        || (eventData.Source is Type == true && sourceType.IsAssignableFrom((Type)eventData.Source))
                         && source != null)
                     {
                         // イベント対象ではない（定義されているイベント発生元とは異なる）

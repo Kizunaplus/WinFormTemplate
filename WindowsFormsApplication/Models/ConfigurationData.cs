@@ -45,6 +45,16 @@ namespace WindowsFormsApplication.Models
             get;
             set;
         }
+
+        [DataMemberAttribute]
+        /// <summary>
+        /// DI設定ファイルパス
+        /// </summary>
+        public String DiConfigPath
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region 取得

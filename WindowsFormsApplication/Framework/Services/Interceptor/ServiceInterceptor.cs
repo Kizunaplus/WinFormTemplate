@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor;
+using Kizuna.Plus.WinMvcForm.Framework.Services.Interceptor;
 
-namespace Kizuna.Plus.WinMvcForm.Framework.Services.Interceotor
+namespace Kizuna.Plus.WinMvcForm.Framework.Services.Interceptor
 {
     class ServiceInterceptor
     {

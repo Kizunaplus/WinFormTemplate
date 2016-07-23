@@ -17,7 +17,7 @@ using Kizuna.Plus.WinMvcForm.Framework.Services;
 using Kizuna.Plus.WinMvcForm.Framework.Views.CommonDialog;
 using WindowsFormsApplication.Models;
 using Kizuna.Plus.WinMvcForm.Framework.Native;
-using Kizuna.Plus.WinMvcForm.Framework.Services.Interceotor;
+using Kizuna.Plus.WinMvcForm.Framework.Services.Interceptor;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
 {
@@ -363,6 +363,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
                     var updateMethod = (MethodInvoker)delegate()
                     {
                         var prevMessageEventArgs = this.statusLabel.Tag as StatusMessageUpdateEventArgs;
+                        if (this.statusLabel.Visible == false)
+                        {
+                            prevMessageEventArgs = null;
+                        }
+
                         if (prevMessageEventArgs != null && prevMessageEventArgs.Priority > messageEventArgs.Priority)
                         {
                             // 優先度が高いメッセージが登録中
@@ -514,13 +519,13 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
             eventData = new CommandEventData(typeof(Application), typeof(WindowCloseCommand), StateMode.None, delegate(object sender, EventArgs args)
             {
                 // ダイアログを閉じる
-                new Thread(delegate()
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                 {
                     UpdateControlChange((MethodInvoker)delegate()
                     {
                         this.Close();
                     });
-                }).Start();
+                });
             });
             eventData = new CommandEventData(typeof(Application), typeof(EditCopyCommand), StateMode.None, delegate(object sender, EventArgs args)
             {
@@ -714,12 +719,20 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
                         actionName = "Index";
                     }
 
+
+                    var oldId = Guid.Empty;
+                    if (this.Controller != null)
+                    {
+                        oldId = this.Controller.ServiceId;
+                    }
                     var newController = ChangeController(controller);
+                    ServicePool.Current.ReleaseService(oldId);
+
                     FieldInfo[] fields = newController.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
                     foreach (FieldInfo field in fields)
                     {
                         // Intect属性がついているフィールドに値を設定
-                        InjectAttribute.InjectService<IService>(newController, field);
+                        InjectAttribute.InjectService<IService>(newController, field, newController.ServiceId);
                     }
 
                     // Controllerのメソッドを実行
@@ -730,12 +743,17 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
                         // メソッドを取得失敗
                         return;
                     }
+
+                    ViewStateData.CurrentThread.Items.Clear();
                     ViewStateData.CurrentThread.Items["Controller"] = controller;
                     ViewStateData.CurrentThread.Items["Action"] = actionName;
+                    ViewStateData.CurrentThread.Items[TransactionInterceptorAttribute.SERVICE_KEY] = new TransactionData();
+
                     object result = invokerMethod.Invoke(newController, parameters);
 
-                    new Thread(delegate()
+                    Thread thread = new Thread(delegate()
                     {
+
                         UpdateControlChange((MethodInvoker)delegate()
                         {
                             this.View = result as IView;
@@ -753,7 +771,9 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
                                 }
                             }
                         });
-                    }).Start();
+                    });
+                    thread.SetApartmentState(ApartmentState.STA);
+                    thread.Start();
 
                 }
             });
@@ -920,13 +940,13 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Views.Forms
             if (e.KeyCode == Keys.F1)
             {
                 var activeControl = this.ActiveControl;
-                while (activeControl is ViewControl)
+                while (activeControl is AbstractView)
                 {
-                    if (((ViewControl)activeControl).ActiveControl == null)
+                    if (((AbstractView)activeControl).ActiveControl == null)
                     {
                         break;
                     }
-                    activeControl = ((ViewControl)activeControl).ActiveControl;
+                    activeControl = ((AbstractView)activeControl).ActiveControl;
                 }
 
                 // ヘルプの表示

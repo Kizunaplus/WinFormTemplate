@@ -20,7 +20,7 @@ namespace WindowsFormsApplication
     /// <summary>
     /// エントリーポイントクラス
     /// </summary>
-    static class Program
+    internal static class Program
     {
         #region 定数
         /// <summary>
@@ -60,6 +60,12 @@ namespace WindowsFormsApplication
             int ie_emulation = int.Parse(AppEnviroment.IEVersion);
             SetIE8KeyforWebBrowserControl(targetApplication, ie_emulation);
 
+#if ENABLE_CONFIGURATION
+            // 設定ファイルの読み込み
+            // 条件付きコンパイルにて指定した場合実行を行います。
+            ReadConfiguration();
+#endif
+
             // ServicePoolの初期化
             ServicePool.Current = new ServicePool();
             ServicePool.Current.Initialize();
@@ -89,12 +95,6 @@ namespace WindowsFormsApplication
             // スプラッシュ表示
             // 条件付きコンパイルにて指定した場合実行を行います。
             SprashForm.ShowSplash(Properties.Resources.splash);
-#endif
-
-#if ENABLE_CONFIGURATION
-            // 設定ファイルの読み込み
-            // 条件付きコンパイルにて指定した場合実行を行います。
-            ReadConfiguration();
 #endif
 
             // 例外処理

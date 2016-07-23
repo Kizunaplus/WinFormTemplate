@@ -9,7 +9,7 @@ using Kizuna.Plus.WinMvcForm.Framework.Services;
 using Kizuna.Plus.WinMvcForm.Framework.Models.Enums;
 using WindowsFormsApplication.Framework.Message;
 
-namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
+namespace Kizuna.Plus.WinMvcForm.Framework.Services.Interceptor
 {
     class ExceptionInterceptorAttribute : ServiceInterceptorAttribute
     {

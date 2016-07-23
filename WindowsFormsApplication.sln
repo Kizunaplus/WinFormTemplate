@@ -3,7 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApplication", "WindowsFormsApplication\WindowsFormsApplication.csproj", "{49F6F4AB-3B0A-4DF6-9B49-4BD9BE5A065A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsApplication.Test", "WindowsApplicationTest\WindowsApplication.Test.csproj", "{5BB28BA0-84BA-4109-8191-EF0C7099534A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{49F6F4AB-3B0A-4DF6-9B49-4BD9BE5A065A} = {49F6F4AB-3B0A-4DF6-9B49-4BD9BE5A065A}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4BA2A8B1-C5D2-433E-B5BE-DB8FC0019F84}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+		WindowsFormsApplication.vsmdi = WindowsFormsApplication.vsmdi
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = WindowsFormsApplication.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -13,6 +28,9 @@ Global
 		{49F6F4AB-3B0A-4DF6-9B49-4BD9BE5A065A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49F6F4AB-3B0A-4DF6-9B49-4BD9BE5A065A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49F6F4AB-3B0A-4DF6-9B49-4BD9BE5A065A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BB28BA0-84BA-4109-8191-EF0C7099534A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BB28BA0-84BA-4109-8191-EF0C7099534A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BB28BA0-84BA-4109-8191-EF0C7099534A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

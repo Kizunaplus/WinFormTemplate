@@ -17,7 +17,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
         /// コンストラクタ
         /// </summary>
         public IntegerValueCheckAttribute()
-            : base("^[0-9]+$", FrameworkValidationMessage.IntegerValueCheckMessage)
+            : base("^-?[0-9]+$", FrameworkValidationMessage.IntegerValueCheckMessage)
         {
 
         }

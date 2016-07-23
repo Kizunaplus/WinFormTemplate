@@ -4,6 +4,7 @@
 		<title></title> \
 		<base href="file:///' + WebRootPath + '/" /> \
 		<link rel="stylesheet" href="./css/style.css" type="text/css" media="screen" /> \
+		<meta http-equiv=\'Content-Type\' content=\'text/html; charset=UTF-8\' /> \
 	</head> \
 	<body> \
 		<h1>Demo Web page - Action Index2</h1> \

@@ -16,7 +16,7 @@ using Kizuna.Plus.WinMvcForm.Framework.Views;
 
 namespace WindowsFormsApplication.Views
 {
-    public partial class DemoView : ViewControl
+    partial class DemoView : AbstractView
     {
         public Guid Id
         {

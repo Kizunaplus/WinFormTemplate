@@ -115,7 +115,7 @@
     <Compile Include="Framework\Controllers\Commands\EditCommand.cs" />
     <Compile Include="Framework\Controllers\Commands\ToolsCommand.cs" />
     <Compile Include="Framework\Controllers\Commands\ActionCommand.cs" />
-    <Compile Include="Framework\Controllers\Controller.cs" />
+    <Compile Include="Framework\Controllers\AbstractController.cs" />
     <Compile Include="Controllers\DemoController.cs" />
     <Compile Include="Framework\Controllers\IController.cs" />
     <Compile Include="Framework\Controllers\State\ExceptionState.cs" />
@@ -145,6 +145,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FrameworkValidationMessage.resx</DependentUpon>
     </Compile>
+    <Compile Include="Framework\Models\DependencyInjectionSetting.cs" />
     <Compile Include="Framework\Models\Enums\LogTypeEnum.cs" />
     <Compile Include="Framework\Models\Validation\DirectoryExistCheckAttribute.cs" />
     <Compile Include="Framework\Models\Validation\FileExistCheckAttribute.cs" />
@@ -166,10 +167,10 @@
     <Compile Include="Framework\Services\Interceptor\ServiceInterceptorAttribute.cs" />
     <Compile Include="Framework\Services\Interceptor\TransactionInterceptorAttribute.cs" />
     <Compile Include="Framework\Services\IService.cs" />
-    <Compile Include="Framework\Services\ITransactionDataService.cs" />
+    <Compile Include="Framework\Services\ITransactionData.cs" />
     <Compile Include="Framework\Services\ServicePool.cs" />
     <Compile Include="Framework\Services\ServiceProxy.cs" />
-    <Compile Include="Framework\Services\TransactionDataService.cs" />
+    <Compile Include="Framework\Services\TransactionData.cs" />
     <Compile Include="Framework\Utility\BackupFileUtility.cs" />
     <Compile Include="Framework\Utility\CommandLineUtility.cs" />
     <Compile Include="Framework\Utility\CryptUtility.cs" />
@@ -270,10 +271,10 @@
       <DependentUpon>AbstractForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Framework\Views\IView.cs" />
-    <Compile Include="Framework\Views\ViewControl.cs">
+    <Compile Include="Framework\Views\AbstractView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Framework\Views\WebViewControl.cs">
+    <Compile Include="Framework\Views\AbstractWebView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Views\Demo2View.cs">
@@ -298,6 +299,7 @@
     <EmbeddedResource Include="Framework\Message\FrameworkDebugMessage.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FrameworkDebugMessage.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Framework\Message\FrameworkMessage.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -350,8 +352,8 @@
     <EmbeddedResource Include="Framework\Views\Form\AbstractForm.resx">
       <DependentUpon>AbstractForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Framework\Views\ViewControl.resx">
-      <DependentUpon>ViewControl.cs</DependentUpon>
+    <EmbeddedResource Include="Framework\Views\AbstractView.resx">
+      <DependentUpon>AbstractView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Demo2View.resx">
       <DependentUpon>Demo2View.cs</DependentUpon>

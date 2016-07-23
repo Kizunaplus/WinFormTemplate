@@ -49,22 +49,22 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
                 case LogType.Error:
                     // エラー
                     state = new ErrorState(sourceType);
-                    args = new LogMessageEventArgs() { Message = string.Format(message, param) };
+                    args = new LogMessageEventArgs() { Message = string.Format(message, param), Type =  type};
                     break;
                 case LogType.Warn:
                     // 警告
                     state = new WarningState(sourceType);
-                    args = new LogMessageEventArgs() { Message = string.Format(message, param) };
+                    args = new LogMessageEventArgs() { Message = string.Format(message, param), Type = type };
                     break;
                 case LogType.Info:
                     // 情報
                     state = new InformationState(sourceType);
-                    args = new LogMessageEventArgs() { Message = string.Format(message, param) };
+                    args = new LogMessageEventArgs() { Message = string.Format(message, param), Type = type };
                     break;
                 case LogType.Debug:
                     // デバッグ
                     state = new DebugState(sourceType);
-                    args = new LogMessageEventArgs() { Message = string.Format(message, param) };
+                    args = new LogMessageEventArgs() { Message = string.Format(message, param), Type = type };
                     break;
                 default:
                     return false;

@@ -2,12 +2,17 @@
 using System.Reflection;
 using System.Transactions;
 using Kizuna.Plus.WinMvcForm.Framework.Services;
-using WindowsFormsApplication.Framework.Services;
+using System;
 
-namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
+namespace Kizuna.Plus.WinMvcForm.Framework.Services.Interceptor
 {
     class TransactionInterceptorAttribute : ServiceInterceptorAttribute
     {
+        /// <summary>
+        /// サービスキー
+        /// </summary>
+        public const String SERVICE_KEY = "Transaction";
+
         /// <summary>
         /// トランザクションオプション設定
         /// </summary>
@@ -34,7 +39,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
 
             using (TransactionScope scope = new TransactionScope(option))
             {
-                ITransactionDataService service = ServicePool.Current.GetService("transaction") as ITransactionDataService;
+                ITransactionData service = ServicePool.Current.GetService(SERVICE_KEY, Guid.Empty) as ITransactionData;
                 service.RollbackReserve = false;
 
                 retValue = base.Invoker(controller, invokerMethod, parameters, attributes);

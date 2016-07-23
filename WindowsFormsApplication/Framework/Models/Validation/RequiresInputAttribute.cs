@@ -14,42 +14,28 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
     class RequiresInputAttribute : ModelValidationAttribute
     {
         /// <summary>
-        /// 入力チェック
-        /// </summary>
-        /// <param name="control">対象コントロール</param>
-        /// <param name="message">エラーメッセージ</param>
-        /// <returns></returns>
-        public override bool Valid(Control control, ref String message)
-        {
-            bool valid = true;
-
-            if (control.Text == string.Empty)
-            {
-                valid = false;
-                message = String.Format(FrameworkValidationMessage.RequiresInputMessage, control.Name, control.Text);
-            }
-
-            return valid;
-        }
-
-        /// <summary>
-        /// プロパティの入力チェック
+        /// 標準型の入力チェック
         /// </summary>
         /// <param name="target">対象</param>
-        /// <param name="property">プロパティ</param>
         /// <param name="message">エラーメッセージ</param>
         /// <returns></returns>
-        public virtual bool Valid(object target, PropertyInfo property, ref String message)
+        public override bool Valid(object target, ref String message, String typeName = "")
         {
             bool valid = true;
 
-            object value = property.GetValue(target, null);
-            if (value == null)
+            if (target == null)
             {
                 valid = false;
-                message = String.Format(FrameworkValidationMessage.RequiresInputMessage, property.Name, value);
+                message = String.Format(FrameworkValidationMessage.RequiresInputMessage, typeName, target);
             }
 
+            if (valid == true 
+                && target.GetType() == typeof(String)
+                && String.IsNullOrEmpty(target as String) == true)
+            {
+                valid = false;
+                message = String.Format(FrameworkValidationMessage.RequiresInputMessage, typeName, target);
+            }
             return valid;
         }
     }

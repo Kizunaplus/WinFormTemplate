@@ -9,11 +9,10 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Services;
 using Kizuna.Plus.WinMvcForm.Framework.Services;
 using System.Runtime.Remoting.Channels;
-using Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor;
-using Kizuna.Plus.WinMvcForm.Framework.Services.Interceotor;
 using System.Reflection;
+using Kizuna.Plus.WinMvcForm.Framework.Services.Interceptor;
 
-namespace WindowsFormsApplication.Framework.Services
+namespace Kizuna.Plus.WinMvcForm.Framework.Services
 {
     /// <summary>
     /// サービスのプロキシクラス

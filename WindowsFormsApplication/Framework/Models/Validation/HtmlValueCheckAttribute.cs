@@ -17,7 +17,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
         /// コンストラクタ
         /// </summary>
         public HtmlValueCheckAttribute()
-            : base("<[\\/a-zA-Z]+>$", FrameworkValidationMessage.HtmlValueCheckMessage, true)
+            : base("<(\".*?\"|'.*?'|[^'\"])*?>", FrameworkValidationMessage.HtmlValueCheckMessage, true)
         {
 
         }

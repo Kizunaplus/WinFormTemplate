@@ -10,7 +10,7 @@ using Kizuna.Plus.WinMvcForm.Framework.Views;
 
 namespace WindowsFormsApplication.Views
 {
-    public partial class DemoWebView : WebViewControl
+    partial class DemoWebView : AbstractWebView
     {
     }
 }

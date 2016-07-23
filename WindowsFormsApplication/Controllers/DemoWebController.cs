@@ -14,7 +14,7 @@ namespace WindowsFormsApplication.Controllers
     /// コントローラサンプル
     /// デフォルトビューを呼び出す。
     /// </summary>
-    class DemoWebController : Controller
+    class DemoWebController : AbstractController
     {
         public override IView Index()
         {

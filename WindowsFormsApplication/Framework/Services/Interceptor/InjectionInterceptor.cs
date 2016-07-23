@@ -8,7 +8,7 @@ using Kizuna.Plus.WinMvcForm.Framework.Models.EventArg;
 using Kizuna.Plus.WinMvcForm.Framework.Services;
 using Kizuna.Plus.WinMvcForm.Framework.Models.Enums;
 
-namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
+namespace Kizuna.Plus.WinMvcForm.Framework.Services.Interceptor
 {
     class InjectionInterceptorAttribute : ServiceInterceptorAttribute
     {
@@ -20,6 +20,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
         /// <returns></returns>
         public override object Invoker(object controller, MethodInfo invokerMethod, object[] parameters, IList<ServiceInterceptorAttribute> attributes)
         {
+            Guid id = Guid.NewGuid();
             FieldInfo[] fields = controller.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
             foreach (FieldInfo field in fields)
             {
@@ -27,10 +28,22 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor
                 if (attr != null && 0 < attr.Length)
                 {
                     // Intect属性がついているフィールドに値を設定
-                    InjectAttribute.InjectService<IService>(controller, field);
+                    InjectAttribute.InjectService<IService>(controller, field, id);
                 }
             }
-            return base.Invoker(controller, invokerMethod, parameters, attributes);
+
+            object ret = null;
+            try
+            {
+                ret = base.Invoker(controller, invokerMethod, parameters, attributes);
+            }
+            finally
+            {
+                // サービスの解放
+                ServicePool.Current.ReleaseService(id);
+            }
+
+            return ret;
         }
     }
 }

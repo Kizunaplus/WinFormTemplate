@@ -51,6 +51,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// 現在定義されているモデルのタイプ一覧
         /// </summary>
         private List<Type> currentDomainModelType;
+
+        /// <summary>
+        /// 検索アセンブリ
+        /// </summary>
+        private IList<Assembly> searchAssembly;
         #endregion
 
         #region プロパティ
@@ -124,6 +129,25 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         }
         #endregion
 
+        #region 初期化処理
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public MvcCooperationData()
+        {
+
+        }
+
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="targetAssembly">Type検索対象アセンブリ</param>
+        public MvcCooperationData(Assembly[] targetAssembly)
+        {
+            this.searchAssembly = new List<Assembly>(targetAssembly);
+        }
+        #endregion
+
         #region 取得
         /// <summary>
         /// 指定したタイプを継承したクラス一覧を取得します。
@@ -143,6 +167,19 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
                 }
             }
 
+            if (searchAssembly != null)
+            {
+                foreach (var ass in searchAssembly) {
+                foreach (Type type in ass.GetTypes())
+                {
+                    if (parentType.IsAssignableFrom(type) == true)
+                    {
+                        list.Add(type);
+                    }
+                }
+                }
+            }
+
             return list;
         }
         #endregion
@@ -155,7 +192,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// <returns></returns>
         public static Type Controller2View(Type controllerType)
         {
-            return GetMappedType(controllerType, CONTROLLER, VIEW);
+            return GetMappedType(controllerType, CONTROLLER, VIEW, new Assembly[] { Assembly.GetAssembly(controllerType) });
         }
 
         /// <summary>
@@ -165,7 +202,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// <returns></returns>
         public static Type View2Controller(Type viewType)
         {
-            return GetMappedType(viewType, VIEW, CONTROLLER);
+            return GetMappedType(viewType, VIEW, CONTROLLER, new Assembly[] { Assembly.GetAssembly(viewType) });
         }
 
         /// <summary>
@@ -175,7 +212,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// <returns></returns>
         public static Type Controller2Model(Type controllerType)
         {
-            return GetMappedType(controllerType, CONTROLLER, MODEL);
+            return GetMappedType(controllerType, CONTROLLER, MODEL, new Assembly[] { Assembly.GetAssembly(controllerType) });
         }
 
         /// <summary>
@@ -185,7 +222,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// <returns></returns>
         public static Type View2Model(Type viewType)
         {
-            return GetMappedType(viewType, VIEW, MODEL);
+            return GetMappedType(viewType, VIEW, MODEL, new Assembly[]{Assembly.GetAssembly(viewType)});
         }
 
         /// <summary>
@@ -194,10 +231,11 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// <param name="type">元のタイプ</param>
         /// <param name="srcType">元のタイプ（MVC）</param>
         /// <param name="destType">対応先のタイプ（MVC）</param>
+        /// <param name="assemblies">検索対象アセンブリ</param>
         /// <returns></returns>
-        private static Type GetMappedType(Type type, String srcType, String destType)
+        private static Type GetMappedType(Type type, String srcType, String destType, IList<Assembly> assemblies = null)
         {
-            return GetMappedType(type.FullName, srcType, destType);
+            return GetMappedType(type.FullName, srcType, destType, assemblies);
         }
         /// <summary>
         /// 対応されているタイプを取得します。
@@ -205,18 +243,34 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// <param name="typeName">元のタイプ名</param>
         /// <param name="srcType">元のタイプ（MVC）</param>
         /// <param name="destType">対応先のタイプ（MVC）</param>
+        /// <param name="assemblies">検索対象アセンブリ</param>
         /// <returns></returns>
-        private static Type GetMappedType(String typeName, String srcType, String destType)
+        private static Type GetMappedType(String typeName, String srcType, String destType, IList<Assembly> assemblies = null)
         {
             string newTypeName = typeName.Replace(srcType, destType);
             Type newType = Type.GetType(newTypeName, false, true);
             if (newType == null)
             {
-                // 見つからない
-                var logCommand = new LogCommand();
-                logCommand.Execute(LogType.Debug, FrameworkDebugMessage.NotFoundMappedType, typeName, srcType, destType);
+                if (assemblies != null)
+                {
+                    foreach (Assembly ass in assemblies)
+                    {
+                        newType = ass.GetType(newTypeName, false, true);
+                        if (newType != null)
+                        {
+                            break;
+                        }
+                    }
+                }
 
-                return null;
+                if (newType == null)
+                {
+                    // 見つからない
+                    var logCommand = new LogCommand();
+                    logCommand.Execute(LogType.Debug, FrameworkDebugMessage.NotFoundMappedType, typeName, srcType, destType);
+
+                    return null;
+                }
             }
 
             Type newIfType = null;

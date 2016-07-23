@@ -34,11 +34,6 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers.Commands
         public bool Execute(IState state, EventArgs args)
         {
             CommandRegister register = CommandRegister.Current;
-            if (register == null)
-            {
-                // コマンド管理クラスが存在しない
-                return false;
-            }
 
             // コマンドの実行
             return register.Execute(this, state, args);

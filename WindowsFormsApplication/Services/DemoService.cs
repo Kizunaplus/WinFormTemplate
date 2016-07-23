@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using WindowsFormsApplication.Models;
 using Kizuna.Plus.WinMvcForm.Framework.Services;
-using Kizuna.Plus.WinMvcForm.Framework.Framework.Services.Interceptor;
+using Kizuna.Plus.WinMvcForm.Framework.Services.Interceptor;
 
 namespace WindowsFormsApplication.Services
 {

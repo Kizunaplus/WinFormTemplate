@@ -32,6 +32,8 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
             {
                 valid = false;
                 message = String.Format(FrameworkValidationMessage.FilePathCheckAttributeMessageIllegalChar, typeName, text, text[index]);
+
+                return valid;
             }
             String fileName = Path.GetFileName(text);
             char[] invalidFileNameChars = System.IO.Path.GetInvalidFileNameChars();

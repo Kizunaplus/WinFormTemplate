@@ -58,14 +58,21 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models.Validation
         {
             bool valid = true;
 
-            String text = target.ToString();
-            if (text.Length < min_length)
+            String text = null;
+            int textLength = 0;
+            if (null != target)
+            {
+                text = target.ToString();
+                textLength = text.Length;
+            }
+
+            if (textLength < min_length)
             {
                 valid = false;
                 message = String.Format(FrameworkValidationMessage.StringLengthInput1ArgsMaxMessage, typeName, text, min_length);
             }
 
-            if (0 <= max_length && max_length < text.Length)
+            if (0 <= max_length && max_length < textLength)
             {
                 valid = false;
                 message = String.Format(FrameworkValidationMessage.StringLengthInput1ArgsMinMessage, typeName, text, min_length, max_length);

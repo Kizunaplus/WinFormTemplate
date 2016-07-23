@@ -14,6 +14,14 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Controllers
     public interface IController : IDisposable
     {
         /// <summary>
+        /// サービスに使用するIDを取得します。
+        /// </summary>
+        Guid ServiceId
+        {
+            get;
+        }
+
+        /// <summary>
         /// 初期化処理
         /// </summary>
         void Initialize();

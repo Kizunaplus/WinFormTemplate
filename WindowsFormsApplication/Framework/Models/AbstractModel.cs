@@ -17,6 +17,7 @@ using System.Reflection;
 using WindowsFormsApplication;
 using WindowsFormsApplication.Framework.Message;
 using Kizuna.Plus.WinMvcForm.Framework.Models.Validation;
+using System.Collections;
 
 namespace Kizuna.Plus.WinMvcForm.Framework.Models
 {
@@ -43,7 +44,27 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// <returns>コピーしたインスタンス</returns>
         public virtual object Clone()
         {
-            return this.MemberwiseClone();
+            var newObj = Activator.CreateInstance(this.GetType());
+            FieldInfo[] thisFields = this.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+
+            foreach (FieldInfo thisField in thisFields)
+            {
+                // 同一名、同一型の値を設定
+                if (typeof(ICloneable).IsAssignableFrom(thisField.FieldType) == true)
+                {
+                    ICloneable val = thisField.GetValue(this) as ICloneable;
+                    if (val != null)
+                    {
+                        thisField.SetValue(newObj, val.Clone());
+                    }
+                }
+                else
+                {
+                    thisField.SetValue(newObj, thisField.GetValue(this));
+                }
+            }
+
+            return newObj;
         }
 
         /// <summary>
@@ -57,8 +78,8 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
                 return;
             }
 
-            FieldInfo[] srcFields = obj.GetType().GetFields();
-            FieldInfo[] destFields = this.GetType().GetFields();
+            FieldInfo[] srcFields = obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo[] destFields = this.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
 
             foreach (FieldInfo srcField in srcFields)
             {
@@ -68,7 +89,19 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
                         && srcField.FieldType == destField.FieldType)
                     {
                         // 同一名、同一型の値を設定
-                        destField.SetValue(this, srcField.GetValue(obj));
+                        if (typeof(ICloneable).IsAssignableFrom(srcField.FieldType) == true)
+                        {
+                            ICloneable val = srcField.GetValue(obj) as ICloneable;
+                            if (val != null)
+                            {
+                                destField.SetValue(this, val.Clone());
+                            }
+                        }
+                        else
+                        {
+                            destField.SetValue(this, srcField.GetValue(obj));
+                        }
+                        break;
                     }
                 }
             }
@@ -80,17 +113,8 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// ファイルから読み込みます。
         /// </summary>
         /// <param name="filePath">読み込むファイルパス</param>
-        public virtual IModel Load(string filePath)
-        {
-            return Load(filePath, SerializeType.Xml);
-        }
-
-        /// <summary>
-        /// ファイルから読み込みます。
-        /// </summary>
-        /// <param name="filePath">読み込むファイルパス</param>
         /// <param name="type">シリアライズタイプ</param>
-        public virtual IModel Load(string filePath, SerializeType type)
+        public virtual IModel Load(string filePath, SerializeType type = SerializeType.Xml)
         {
             if (File.Exists(filePath) == false)
             {
@@ -98,7 +122,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
                 var logCommand = new LogCommand();
                 logCommand.Execute(LogType.Debug, FrameworkDebugMessage.ModelSerialize_FileNotFound, this.GetType().FullName, "Load", filePath, type);
 
-                return this;
+                return null;
             }
 
             IModel model = null;
@@ -115,7 +139,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// </summary>
         /// <param name="stream">ストリーム</param>
         /// <param name="type">シリアライズタイプ</param>
-        public virtual IModel Load(Stream stream, SerializeType type)
+        public virtual IModel Load(Stream stream, SerializeType type = SerializeType.Xml)
         {
             if (SerializeType.Xml == type)
             {
@@ -136,12 +160,39 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         }
 
         /// <summary>
+        /// ファイルから読み込みます。
+        /// </summary>
+        /// <param name="filePath">読み込むファイルパス</param>
+        /// <param name="password">復号化パスワード</param>
+        /// <param name="type">シリアライズタイプ</param>
+        public virtual IModel LoadDecrypt(string filePath, string password, SerializeType type = SerializeType.Xml)
+        {
+            if (File.Exists(filePath) == false)
+            {
+                // ファイルが存在しない
+                var logCommand = new LogCommand();
+                logCommand.Execute(LogType.Debug, FrameworkDebugMessage.ModelSerialize_FileNotFound, this.GetType().FullName, "LoadDecrypt", filePath, type);
+
+                return null;
+            }
+
+            IModel model = null;
+            using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                model = LoadDecrypt(stream, password, type);
+            }
+
+            return model;
+        }
+
+        /// <summary>
         /// ストリームから読み込みます。
         /// 復号化
         /// </summary>
         /// <param name="stream">ストリーム</param>
+        /// <param name="password">復号化パスワード</param>
         /// <param name="type">シリアライズタイプ</param>
-        public virtual IModel LoadDecrypt(Stream stream, string password, SerializeType type)
+        public virtual IModel LoadDecrypt(Stream stream, string password, SerializeType type = SerializeType.Xml)
         {
             using (SymmetricAlgorithm symmetricAlgorithm = SymmetricAlgorithm.Create(AppEnviroment.CrypotAlgorithm))
             {
@@ -197,7 +248,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// <param name="stream">ストリーム</param>
         protected IModel LoadXml(Stream stream)
         {
-            IModel result = this;
+            IModel result = null;
 
             try
             {
@@ -222,7 +273,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// <param name="stream">ストリーム</param>
         protected IModel LoadBinary(Stream stream)
         {
-            IModel result = this;
+            IModel result = null;
 
             try
             {
@@ -247,7 +298,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// <param name="stream">ストリーム</param>
         protected IModel LoadJson(Stream stream)
         {
-            IModel result = this;
+            IModel result = null;
 
             try
             {
@@ -255,12 +306,18 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
                 //オブジェクトの型を指定する
                 var serializer = new JavaScriptSerializer();
                 //読み込むファイルを開く
-                byte[] jsonDataBytes = new byte[stream.Length - stream.Position];
-                stream.Read(jsonDataBytes, 0, jsonDataBytes.Length);
+                List<byte> jsonDataList = new List<byte>();
+                byte[] jsonDataBytes = new byte[1024];
+                int readBytes = 0;
+                while ((readBytes = stream.Read(jsonDataBytes, 0, jsonDataBytes.Length)) > 0)
+                {
+                    Array.Resize(ref jsonDataBytes, readBytes);
+                    jsonDataList.AddRange(jsonDataBytes);
+                }
 
-                string jsonData = System.Text.Encoding.UTF8.GetString(jsonDataBytes);
+                string jsonData = System.Text.Encoding.UTF8.GetString(jsonDataList.ToArray());
                 //デシリアル化し、XMLファイルからデータを生成
-                result = serializer.Deserialize(jsonData, typeof(IModel)) as IModel;
+                result = serializer.Deserialize(jsonData, this.GetType()) as IModel;
             }
             catch (Exception ex)
             {
@@ -277,19 +334,16 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// ファイルへ保存します。
         /// </summary>
         /// <param name="filePath">保存するファイルパス</param>
-        public virtual bool Save(string filePath)
-        {
-            return Save(filePath, SerializeType.Xml);
-        }
-
-        /// <summary>
-        /// ファイルへ保存します。
-        /// </summary>
-        /// <param name="filePath">保存するファイルパス</param>
         /// <param name="type">シリアライズタイプ</param>
-        public virtual bool Save(string filePath, SerializeType type)
+        public virtual bool Save(string filePath, SerializeType type = SerializeType.Xml)
         {
             bool bRet = false;
+            if (string.IsNullOrEmpty(filePath) == true)
+            {
+                // ファイルパスが不正
+                return bRet;
+            }
+
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 bRet = Save(stream, type);
@@ -303,7 +357,7 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// </summary>
         /// <param name="filePath">保存するファイルパス</param>
         /// <param name="type">シリアライズタイプ</param>
-        public virtual bool Save(Stream stream, SerializeType type)
+        public virtual bool Save(Stream stream, SerializeType type = SerializeType.Xml)
         {
             if (SerializeType.Xml == type)
             {
@@ -328,9 +382,33 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
         /// ファイルへ保存します。
         /// 暗号化
         /// </summary>
-        /// <param name="filePath">保存するファイルパス</param>
+        /// <param name="filePath">保存ファイルパス</param>
         /// <param name="type">シリアライズタイプ</param>
-        public virtual bool SaveCrypt(Stream stream, string password, SerializeType type)
+        public virtual bool SaveCrypt(string filePath, string password, SerializeType type = SerializeType.Xml)
+        {
+            bool bRet = false;
+            if (string.IsNullOrEmpty(filePath) == true)
+            {
+                // ファイルパスが不正
+                return bRet;
+            }
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                bRet = SaveCrypt(stream, password, type);
+            }
+
+            return bRet;
+        }
+
+        /// <summary>
+        /// ファイルへ保存します。
+        /// 暗号化
+        /// </summary>
+        /// <param name="stream">保存ストリーム</param>
+        /// <param name="password">暗号化パスワード</param>
+        /// <param name="type">シリアライズタイプ</param>
+        public virtual bool SaveCrypt(Stream stream, string password, SerializeType type = SerializeType.Xml)
         {
             using (SymmetricAlgorithm symmetricAlgorithm = SymmetricAlgorithm.Create(AppEnviroment.CrypotAlgorithm))
             {
@@ -477,27 +555,23 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
             PropertyInfo[] properties = this.GetType().GetProperties();
             foreach (PropertyInfo property in properties)
             {
-                if (typeof(AbstractModel).IsAssignableFrom(property.PropertyType) == false)
+                foreach (ModelValidationAttribute attr in property.GetCustomAttributes(typeof(ModelValidationAttribute), true))
                 {
-                    foreach (Attribute attr in property.GetCustomAttributes(typeof(ModelValidationAttribute), true))
+                    isValid &= attr.Valid(this, property, ref message);
+                    if (isValid == false)
                     {
-                        ModelValidationAttribute ivAttr = attr as ModelValidationAttribute;
-                        if (ivAttr == null)
-                        {
-                            continue;
-                        }
-
-                        isValid |= ivAttr.Valid(this, property, ref message);
-                        if (isValid == false)
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
-                else
+
+                if (typeof(AbstractModel).IsAssignableFrom(property.PropertyType) == true)
                 {
                     // Modelクラスが指定されている場合
-                    isValid = ((AbstractModel)property.GetValue(this, null)).Valid(out message);
+                    var subObj = ((AbstractModel)property.GetValue(this, null));
+                    if (subObj != null)
+                    {
+                        isValid = subObj.Valid(out message);
+                    }
                 }
 
                 if (isValid == false)
@@ -574,11 +648,28 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
                 object src = field.GetValue(this);
                 object dest = field.GetValue(data);
 
-                if ((src == null && dest != null) 
-                    || (src != null && src.Equals(dest) == false))
+                if (typeof(System.Collections.IList).IsAssignableFrom(field.FieldType) == false
+                    && src != null && dest != null)
                 {
-                    // 値が異なる場合
-                    return false;
+                    if ((src == null && dest != null)
+                        || (src != null && src.Equals(dest) == false))
+                    {
+                        // 値が異なる場合
+                        return false;
+                    }
+                }
+                else
+                {
+                    var destList = (System.Collections.IList)dest;
+                    foreach (var srcData in (System.Collections.IList)src)
+                    {
+                        if (destList.Contains(srcData) == false)
+                        {
+                            // 値が異なる場合
+                            return false;
+                        }
+                    }
+
                 }
             }
 
@@ -603,9 +694,22 @@ namespace Kizuna.Plus.WinMvcForm.Framework.Models
             {
                 object src = field.GetValue(this);
 
-                if (src != null)
+                IList list = src as IList;
+                if (list != null) {
+                    foreach (object listObj in list)
+                    {
+                        if (listObj != null)
+                        {
+                            hashcode += listObj.GetHashCode() * 31;
+                        }
+                        else
+                        {
+                            hashcode *= 31;
+                        }
+                    }
+                } else if (src != null)
                 {
-                    hashcode *= src.GetHashCode() * 31;
+                    hashcode += src.GetHashCode() * 31;
                 }
                 else
                 {

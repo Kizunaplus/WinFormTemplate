@@ -10,7 +10,7 @@ namespace WindowsFormsApplication.Controllers
     /// コントローラサンプル
     /// デフォルトビューを呼び出す。
     /// </summary>
-    class DemoController : Controller
+    class DemoController : AbstractController
     {
         /// <summary>
         /// デモサービス

@@ -17,7 +17,7 @@ using Kizuna.Plus.WinMvcForm.Framework.Utility;
 
 namespace WindowsFormsApplication.Views
 {
-    public partial class Demo3View : ViewControl
+    partial class Demo3View : AbstractView
     {
         public Demo3View()
         {
